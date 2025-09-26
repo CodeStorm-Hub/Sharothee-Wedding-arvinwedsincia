@@ -498,6 +498,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wedding Films Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-secondary mb-6">
+              Wedding Films
+            </h2>
+            <div className="w-24 h-1 bg-primary mx-auto mb-4"></div>
+            <p className="text-lg text-muted max-w-2xl mx-auto">
+              Relive the moments that made our celebration so special.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="group">
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
+                <video
+                  src="/videos/wedding-highlights.mp4"
+                  poster="/images/highlights-thumbnail.jpg"
+                  controls
+                  className="w-full h-full object-contain"
+                ></video>
+              </div>
+              <h3 className="text-2xl font-serif font-semibold text-secondary mb-2">
+                Wedding Highlights
+              </h3>
+              <p className="text-muted">
+                A cinematic look at the most beautiful moments from our wedding day.
+              </p>
+            </div>
+
+            <div className="group">
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
+                <video
+                  src="/videos/wedding-reception.mp4"
+                  poster="/images/reception-thumbnail.jpg"
+                  controls
+                  className="w-full h-full object-contain"
+                ></video>
+              </div>
+              <h3 className="text-2xl font-serif font-semibold text-secondary mb-2">
+                Reception & Celebration
+              </h3>
+              <p className="text-muted">
+                All the joy, laughter, and dancing from our unforgettable reception.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Links Section */}
   <section className="py-20 gradient-wedding">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
