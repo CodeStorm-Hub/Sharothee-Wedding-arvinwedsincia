@@ -335,6 +335,57 @@ html {
   font-family: var(--font-serif);
 }
 
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Enhanced focus indicators */
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.focus\:ring-offset-2:focus {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--color-primary);
+}
+
+/* Improved touch targets for mobile - WCAG 2.1 compliance */
+@media (max-width: 640px) {
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Reduce motion for users who prefer it - Accessibility best practice */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Utilities */
 .touch-pan-zoom {
   touch-action: pan-x pan-y pinch-zoom;

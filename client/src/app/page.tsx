@@ -9,24 +9,37 @@ import { ArrowRightIcon, HeartIcon, CalendarDaysIcon, PhotoIcon, MapPinIcon, Env
 export default function HomePage() {
   return (
     <div className="min-h-screen overflow-x-hidden">
+      {/* Skip Links for Accessibility - Best Practice for screen readers */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50 focus:z-50 transition-all duration-300"
+        aria-label="Skip to main content of the page"
+      >
+        Skip to main content
+      </a>
       <Navigation />
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center gradient-hero pt-16">
+      <main id="main-content">
+        <section 
+          id="home" 
+          className="min-h-screen flex items-center justify-center gradient-hero pt-16"
+          aria-label="Wedding announcement and save the date"
+        >
         <div className="text-center px-4 sm:px-6 lg:px-8 w-full max-w-6xl">
           <div className="animate-fadeInUp">
-            <h2 className="pt-2 sm:pt-3 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light text-secondary mb-4 sm:mb-6 leading-tight">
+            <h1 className="pt-2 sm:pt-3 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light text-secondary mb-4 sm:mb-6 leading-tight">
               Incia & Arvin
-            </h2>
+            </h1>
             <div className="w-16 sm:w-20 md:w-24 h-1 bg-primary mx-auto mb-6 sm:mb-8"></div>
             <p className="text-lg sm:text-xl md:text-2xl text-muted mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
               From childhood friends at AISD to forever partners
             </p>
             
-            {/* Heart Collage Component with enhanced presentation */}
-            <div className="my-6 sm:my-8 relative overflow-hidden">
+            {/* Heart Collage Component with enhanced presentation and accessibility */}
+            <div className="my-6 sm:my-8 relative overflow-hidden" role="img" aria-label="Romantic collage of Incia and Arvin's memorable moments together">
               {/* Subtle background glow for the collage - no scaling to prevent overflow */}
-              <div className="absolute inset-0 bg-gradient-radial from-primary/8 via-primary/3 to-transparent rounded-full blur-xl opacity-50"></div>
+              <div className="absolute inset-0 bg-gradient-radial from-primary/8 via-primary/3 to-transparent rounded-full blur-xl opacity-50" aria-hidden="true"></div>
               <HeartCollage />
             </div>
             
@@ -34,42 +47,45 @@ export default function HomePage() {
               Join us as we celebrate our love story across continents
             </p>
             
-            {/* Wedding Date */}
-            <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-sm sm:max-w-md mx-auto mb-8 sm:mb-12 shadow-xl border border-cream-200">
+            {/* Wedding Date - Enhanced with better accessibility */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-sm sm:max-w-md mx-auto mb-8 sm:mb-12 shadow-xl border border-cream-200" role="region" aria-labelledby="wedding-date-heading">
               <div className="flex items-center justify-center gap-2 mb-3">
-                <CalendarDaysIcon className="h-6 w-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-serif font-semibold text-secondary">
+                <CalendarDaysIcon className="h-6 w-6 text-primary" aria-hidden="true" />
+                <h2 id="wedding-date-heading" className="text-xl sm:text-2xl font-serif font-semibold text-secondary">
                   Save the Date
-                </h3>
+                </h2>
               </div>
               <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
                 December 16, 2025
               </p>
-              <p className="text-sm text-muted mb-4">Tuesday • Starts at 6:00 PM</p>
-              {/* Countdown Timer */}
+              <p className="text-sm text-muted mb-4">Tuesday • 6:00 PM Bangladesh Standard Time (GMT+6)</p>
+              {/* Countdown Timer with accessibility */}
               <Countdown 
                 targetDate="2025-12-16T00:00:00+06:00" 
                 className="mb-4"
+                aria-label="Time remaining until the wedding ceremony"
               />
               <p className="text-muted font-medium">
-                Dhaka, Bangladesh
+                📍 Dhaka, Bangladesh
               </p>
               <p className="text-sm text-muted mt-1">
                 After-party in Phu Quoc, Vietnam
               </p>
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - Enhanced with better accessibility and micro-animations */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-md mx-auto mb-10 sm:mb-12">
               <Link
                 href="/rsvp"
-                className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-6 sm:px-8 py-3 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-6 sm:px-8 py-3 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                aria-label="RSVP for Incia and Arvin's wedding ceremony"
               >
                 RSVP Now
               </Link>
               <Link
                 href="#story"
-                className="w-full sm:w-auto border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 rounded-full font-medium transition-all duration-300"
+                className="w-full sm:w-auto border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                aria-label="Read about our love story journey"
               >
                 Our Story
               </Link>
@@ -77,9 +93,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </main>
 
-      {/* Our Story Section */}
-      <section id="story" className="py-20 bg-white relative overflow-hidden">
+      {/* Our Story Section - Enhanced design with accessibility */}
+      <section id="story" className="py-20 bg-white relative overflow-hidden" aria-label="Our love story timeline">
         {/* Decorative Background Elements */}
         <div className="absolute top-0 left-0 w-full h-full" aria-hidden="true">
           <div className="absolute top-20 left-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
@@ -133,7 +150,7 @@ export default function HomePage() {
           <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl mb-4">
                     <Image
                       src="/images/story/Where It All Began 1.jpeg"
-                      alt="AISD memories - Where it all began"
+                      alt="Incia and Arvin as students at American International School of Dhaka, sharing happy moments during their school years"
                       fill
             className="object-cover object-[50%_24%] sm:object-[50%_28%] lg:object-[50%_32%] scale-[1.06] hover:scale-[1.1] transition-transform duration-700 brightness-110 contrast-105 saturate-105 motion-reduce:transform-none motion-reduce:transition-none"
                       sizes="(max-width: 768px) 100vw, 60vw"
@@ -149,8 +166,9 @@ export default function HomePage() {
           <div className="relative h-40 sm:h-36 lg:h-36 rounded-xl overflow-hidden shadow-lg md:transform md:-rotate-1 md:hover:rotate-0 transition-transform duration-500 motion-reduce:transform-none motion-reduce:transition-none">
                     <Image
                       src="/images/story/Where It All Began 2.jpeg"
-                      alt="AISD school days together"
+                      alt="Incia and Arvin during their early friendship at AISD, showcasing their close bond during school activities"
                       fill
+                      loading="lazy"
                       className="object-cover scale-[1.1] hover:scale-[1.15] transition-transform duration-700 brightness-125 contrast-110 saturate-110 motion-reduce:transform-none motion-reduce:transition-none"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 30vw"
                       style={{ objectPosition: '48% 32%' }}
@@ -160,8 +178,9 @@ export default function HomePage() {
   <div className="relative h-40 sm:h-36 lg:h-36 rounded-xl overflow-hidden shadow-lg md:transform md:rotate-1 md:hover:rotate-0 transition-transform duration-500 motion-reduce:transform-none motion-reduce:transition-none">
                     <Image
                       src="/images/story/Where It All Began 3.jpeg"
-                      alt="Early friendship moments"
+                      alt="Heartwarming moments of Incia and Arvin's blossoming friendship during their teenage years at school"
                       fill
+                      loading="lazy"
       className="object-cover scale-[1.1] hover:scale-[1.15] transition-transform duration-700 brightness-105 saturate-105 motion-reduce:transform-none motion-reduce:transition-none"
       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 30vw"
       style={{ objectPosition: '50% 28%' }}
