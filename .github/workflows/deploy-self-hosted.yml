@@ -1,0 +1,394 @@
+name: 🚀 Deploy to Self-Hosted VPS
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'client/**'
+      - '.github/workflows/deploy-self-hosted.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: false
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+permissions:
+  contents: read
+  actions: write
+
+env:
+  NODE_VERSION: '20'
+  WORKING_DIRECTORY: './client'
+  DEPLOY_PATH: '/var/www/Sharothee-Wedding/client'
+  PM2_APP_NAME: 'sharothee-wedding'
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'client/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci --prefer-offline --no-audit
+          echo "✅ Dependencies installed successfully"
+
+      - name: Create environment file for build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔧 Creating environment file for build validation..."
+          cat << EOF > .env.local
+          # Build-time environment (placeholders for validation)
+          DATABASE_URL="file:./prisma/dev.db"
+          NEXTAUTH_SECRET="build-validation-secret"
+          NEXTAUTH_URL="http://localhost:3000"
+          GMAIL_USER="build@validation.com"
+          GMAIL_APP_PASSWORD="build-validation"
+          CLOUDINARY_CLOUD_NAME="build"
+          CLOUDINARY_API_KEY="build"
+          CLOUDINARY_API_SECRET="build"
+          EOF
+          echo "✅ Environment file created for build validation"
+
+      - name: Generate Prisma client
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🗄️ Generating Prisma client..."
+          npx prisma generate
+          echo "✅ Prisma client generated"
+
+      - name: Lint code
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔍 Running linter..."
+          npm run lint
+          echo "✅ Linting passed"
+
+      - name: Type check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔍 Running type check..."
+          npm run type-check
+          echo "✅ Type check passed"
+
+      - name: Run tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🧪 Running tests..."
+          npm test -- --ci --coverage --watchAll=false
+          echo "✅ Tests completed"
+
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🏗️ Building Next.js application..."
+          npm run build
+          echo "✅ Build completed successfully"
+
+      - name: Verify build artifacts
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔍 Verifying build artifacts..."
+          if [ -d ".next" ]; then
+            echo "✅ .next directory found"
+            echo "📦 Build size: $(du -sh .next/ | cut -f1)"
+            echo "📄 Total files: $(find .next/ -type f | wc -l)"
+            if [ -f ".next/BUILD_ID" ]; then
+              echo "✅ BUILD_ID: $(cat .next/BUILD_ID)"
+            fi
+          else
+            echo "❌ .next directory not found - build failed"
+            exit 1
+          fi
+
+      - name: Create deployment package
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "📦 Creating deployment package..."
+          # Create tarball excluding unnecessary files
+          tar -czf ../deployment-package.tar.gz \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='out' \
+            --exclude='prisma/dev.db' \
+            --exclude='test-results' \
+            --exclude='playwright-report' \
+            --exclude='.env.local' \
+            --exclude='coverage' \
+            .
+          
+          echo "✅ Deployment package created"
+          echo "📦 Package size: $(du -sh ../deployment-package.tar.gz | cut -f1)"
+
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package-${{ github.sha }}
+          path: deployment-package.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy to Self-Hosted Server
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 30
+    environment: 
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Download deployment package
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-package-${{ github.sha }}
+          path: /tmp/deployment
+
+      - name: Prepare deployment directory
+        run: |
+          echo "🔧 Preparing deployment directory..."
+          sudo mkdir -p ${{ env.DEPLOY_PATH }}
+          sudo chown -R $USER:$USER ${{ env.DEPLOY_PATH }}
+          echo "✅ Deployment directory ready"
+
+      - name: Backup current deployment
+        run: |
+          echo "💾 Creating backup of current deployment..."
+          if [ -d "${{ env.DEPLOY_PATH }}/.next" ]; then
+            BACKUP_DIR="${{ env.DEPLOY_PATH }}_backup_$(date +%Y%m%d_%H%M%S)"
+            sudo cp -r ${{ env.DEPLOY_PATH }} $BACKUP_DIR
+            echo "✅ Backup created at: $BACKUP_DIR"
+            # Keep only last 3 backups
+            ls -dt ${{ env.DEPLOY_PATH }}_backup_* | tail -n +4 | xargs -r rm -rf
+          else
+            echo "ℹ️ No existing deployment found, skipping backup"
+          fi
+
+      - name: Extract deployment package
+        run: |
+          echo "📦 Extracting deployment package..."
+          cd ${{ env.DEPLOY_PATH }}
+          tar -xzf /tmp/deployment/deployment-package.tar.gz
+          rm -f /tmp/deployment/deployment-package.tar.gz
+          echo "✅ Package extracted successfully"
+
+      - name: Setup production environment
+        run: |
+          echo "🔧 Setting up production environment variables..."
+          cd ${{ env.DEPLOY_PATH }}
+          
+          # Create .env.local from secrets
+          cat << EOF > .env.local
+          # Database
+          DATABASE_URL="${{ secrets.DATABASE_URL }}"
+          
+          # NextAuth
+          NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}"
+          NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}"
+          
+          # Email Configuration
+          GMAIL_USER="${{ secrets.GMAIL_USER }}"
+          GMAIL_APP_PASSWORD="${{ secrets.GMAIL_APP_PASSWORD }}"
+          GMAIL_FROM="${{ secrets.GMAIL_FROM }}"
+          TEST_EMAIL_TO="${{ secrets.TEST_EMAIL_TO }}"
+          
+          # Admin Credentials
+          ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}"
+          ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}"
+          
+          # Cloudinary
+          CLOUDINARY_CLOUD_NAME="${{ secrets.CLOUDINARY_CLOUD_NAME }}"
+          CLOUDINARY_API_KEY="${{ secrets.CLOUDINARY_API_KEY }}"
+          CLOUDINARY_API_SECRET="${{ secrets.CLOUDINARY_API_SECRET }}"
+          
+          # Application Settings
+          NODE_ENV="production"
+          NEXT_PUBLIC_APP_URL="${{ secrets.NEXTAUTH_URL }}"
+          EOF
+          
+          echo "✅ Environment variables configured"
+          echo "🔒 Environment file permissions: $(ls -la .env.local | awk '{print $1}')"
+
+      - name: Install production dependencies
+        run: |
+          echo "📦 Installing production dependencies..."
+          cd ${{ env.DEPLOY_PATH }}
+          npm ci --omit=dev --prefer-offline --no-audit
+          echo "✅ Production dependencies installed"
+
+      - name: Generate Prisma client
+        run: |
+          echo "🗄️ Generating Prisma client..."
+          cd ${{ env.DEPLOY_PATH }}
+          npx prisma generate
+          echo "✅ Prisma client generated"
+
+      - name: Run database migrations
+        run: |
+          echo "🗄️ Running database migrations..."
+          cd ${{ env.DEPLOY_PATH }}
+          npx prisma migrate deploy
+          echo "✅ Database migrations completed"
+
+      - name: Build application on server
+        run: |
+          echo "🏗️ Building application on server..."
+          cd ${{ env.DEPLOY_PATH }}
+          npm run build
+          echo "✅ Application built successfully"
+          
+          # Verify build
+          if [ -f ".next/BUILD_ID" ]; then
+            echo "✅ Server Build ID: $(cat .next/BUILD_ID)"
+          fi
+
+      - name: Restart application with PM2
+        run: |
+          echo "🔄 Restarting application with PM2..."
+          cd ${{ env.DEPLOY_PATH }}
+          
+          # Check if PM2 is installed
+          if ! command -v pm2 &> /dev/null; then
+            echo "📦 Installing PM2..."
+            sudo npm install -g pm2
+          fi
+          
+          # Check if app is already running
+          if pm2 describe ${{ env.PM2_APP_NAME }} > /dev/null 2>&1; then
+            echo "🔄 Reloading existing PM2 process..."
+            pm2 reload ${{ env.PM2_APP_NAME }} --update-env
+          else
+            echo "🚀 Starting new PM2 process..."
+            pm2 start npm --name "${{ env.PM2_APP_NAME }}" -- start
+            pm2 save
+          fi
+          
+          # Display PM2 status
+          echo "✅ PM2 Status:"
+          pm2 list
+          pm2 info ${{ env.PM2_APP_NAME }}
+
+      - name: Verify deployment
+        run: |
+          echo "✅ Verifying deployment..."
+          
+          # Wait for app to start
+          echo "⏳ Waiting for application to start..."
+          sleep 10
+          
+          # Check if app is responding
+          MAX_ATTEMPTS=6
+          ATTEMPT=1
+          
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "🔍 Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking application health..."
+            
+            if curl -f -s -o /dev/null -w "%{http_code}" http://localhost:3000 | grep -q "200\|301\|302"; then
+              echo "✅ Application is responding!"
+              
+              # Test API endpoint
+              if curl -f -s http://localhost:3000/api/health > /dev/null 2>&1; then
+                echo "✅ API health check passed"
+              else
+                echo "ℹ️ API health endpoint not available (may not be implemented)"
+              fi
+              
+              break
+            else
+              if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                echo "❌ Application is not responding after $MAX_ATTEMPTS attempts"
+                echo "📋 PM2 logs (last 50 lines):"
+                pm2 logs ${{ env.PM2_APP_NAME }} --lines 50 --nostream
+                exit 1
+              fi
+              
+              echo "⏳ Application not ready yet, waiting 10 seconds..."
+              sleep 10
+              ATTEMPT=$((ATTEMPT + 1))
+            fi
+          done
+          
+          echo "🎉 Deployment verification completed successfully!"
+
+      - name: Display deployment information
+        if: always()
+        run: |
+          echo "📋 Deployment Summary"
+          echo "===================="
+          echo "🔗 Application URL: ${{ secrets.NEXTAUTH_URL }}"
+          echo "📦 Build ID: $(cat ${{ env.DEPLOY_PATH }}/.next/BUILD_ID 2>/dev/null || echo 'N/A')"
+          echo "🕒 Deployment Time: $(date)"
+          echo "📊 PM2 Status:"
+          pm2 list
+          echo ""
+          echo "📄 Recent logs:"
+          pm2 logs ${{ env.PM2_APP_NAME }} --lines 20 --nostream || echo "No logs available"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "🧹 Cleaning up temporary files..."
+          rm -rf /tmp/deployment
+          echo "✅ Cleanup completed"
+
+  notify:
+    name: Deployment Notification
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Send deployment status notification
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const buildStatus = '${{ needs.build.result }}';
+            const deployStatus = '${{ needs.deploy.result }}';
+            const environment = '${{ github.event.inputs.environment || 'production' }}';
+            
+            let status = '✅ SUCCESS';
+            let emoji = '🎉';
+            
+            if (buildStatus !== 'success' || deployStatus !== 'success') {
+              status = '❌ FAILED';
+              emoji = '🚨';
+            }
+            
+            const message = `${emoji} **Deployment ${status}**\n\n` +
+              `**Environment:** ${environment}\n` +
+              `**Build:** ${buildStatus === 'success' ? '✅' : '❌'} ${buildStatus}\n` +
+              `**Deploy:** ${deployStatus === 'success' ? '✅' : '❌'} ${deployStatus}\n` +
+              `**Commit:** ${context.sha.substring(0, 7)}\n` +
+              `**Branch:** ${context.ref.replace('refs/heads/', '')}\n` +
+              `**Triggered by:** @${context.actor}\n\n` +
+              `**Time:** ${new Date().toISOString()}`;
+            
+            console.log(message);
+            
+            // If there's an issue or PR context, add a comment
+            if (context.issue && context.issue.number) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+            }
