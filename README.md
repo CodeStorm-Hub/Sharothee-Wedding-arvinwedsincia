@@ -46,20 +46,24 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 
 ## 🌐 Live Deployments
 
-### GitHub Pages (Static) - **Recommended for Quick Deploy**
+### GitHub Pages (Static) - **Recommended for Quick Deploy** ⚡
 - **URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+- **Deployment**: Automated via GitHub Actions
 - **Features**: 
-  - ✅ All informational pages
-  - ✅ Working RSVP form (via email)
-  - ✅ Working Contact form (via email)
-  - ✅ Photo galleries
-  - ✅ Event schedules
-  - ✅ Mobile responsive
+  - ✅ All informational pages (Home, Events, Gallery, Live, Travel, Contact, RSVP)
+  - ✅ Working RSVP form (via Web3Forms - email notifications)
+  - ✅ Working Contact form (via Web3Forms - email notifications)
+  - ✅ All images and photo galleries
+  - ✅ Event schedules with venue information
+  - ✅ Fully mobile responsive
+  - ✅ Fast loading (static export)
 - **Limitations**:
   - ❌ No admin panel (requires server)
   - ❌ No database storage (forms send emails only)
-  - ❌ No authentication
-- **Setup Guide**: See `GITHUB_PAGES_SETUP.md` or `QUICK_DEPLOY.md`
+  - ❌ No authentication system
+- **Quick Setup**: See [`QUICK_DEPLOY_GITHUB_PAGES.md`](QUICK_DEPLOY_GITHUB_PAGES.md) (5 minutes)
+- **Full Guide**: See [`GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md`](GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md) (complete documentation)
+- **Testing**: See [`TESTING_GUIDE.md`](TESTING_GUIDE.md) (post-deployment verification)
 
 ### Hostinger VPS (Full-Stack) - **For Complete Functionality**
 - **Features**:
@@ -195,9 +199,26 @@ client/
 
 ## 🚀 Deployment
 
-### GitHub Pages (Static Site)
+### GitHub Pages (Static Site) - Automated Deployment
 
-The website is automatically deployed to GitHub Pages on every push to `main`:
+The website automatically deploys to GitHub Pages via GitHub Actions on every push to `main`.
+
+#### Quick Deploy (5 minutes)
+
+1. **Get Web3Forms API Key** (free at https://web3forms.com)
+2. **Add GitHub Secret**: `WEB3FORMS_ACCESS_KEY` in repository settings
+3. **Enable GitHub Pages**: Settings → Pages → Source: GitHub Actions
+4. **Push to main**: Deployment starts automatically
+
+**Live URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+
+#### Documentation
+
+- **Quick Start**: [`QUICK_DEPLOY_GITHUB_PAGES.md`](QUICK_DEPLOY_GITHUB_PAGES.md) - 5-minute setup guide
+- **Full Guide**: [`GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md`](GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md) - Complete documentation
+- **Testing**: [`TESTING_GUIDE.md`](TESTING_GUIDE.md) - Post-deployment verification checklist
+
+#### Manual Build
 
 ```bash
 # Static build (excludes API routes and admin pages)
@@ -207,9 +228,12 @@ npm run build:static
 # Output is in client/out directory
 ```
 
-**Live URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+#### Verify Deployment
 
-See `GITHUB_PAGES_DEPLOYMENT.md` for complete deployment documentation.
+```bash
+# Run automated verification script
+bash scripts/verify-deployment.sh https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia
+```
 
 ### Hostinger VPS (Full-Stack)
 
