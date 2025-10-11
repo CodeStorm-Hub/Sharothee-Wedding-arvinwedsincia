@@ -90,7 +90,7 @@ jobs:
           # In production, use proper secrets and Hostinger VPS deployment
           cat << EOF > .env.local
           # Database (placeholder - not functional in static export)
-          DATABASE_URL="file:./dev.db"
+          DATABASE_URL="file:./prisma/dev.db"
           
           # NextAuth (placeholder - not functional in static export)
           NEXTAUTH_SECRET="wedding-pages-deploy-secret"
