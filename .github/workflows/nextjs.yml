@@ -85,18 +85,21 @@ jobs:
         working-directory: ./client
         run: |
           echo "Creating environment file for build..."
+          # NOTE: These values are placeholders only to satisfy build requirements
+          # Since static export is disabled, this workflow won't actually deploy
+          # In production, use proper secrets and Hostinger VPS deployment
           cat << EOF > .env.local
-          # Database
+          # Database (placeholder - not functional in static export)
           DATABASE_URL="file:./dev.db"
           
-          # NextAuth
+          # NextAuth (placeholder - not functional in static export)
           NEXTAUTH_SECRET="wedding-pages-deploy-secret"
           NEXTAUTH_URL="http://localhost:3000"
           
-          # Email (Placeholder)
+          # Email (placeholder - not functional in static export)
           RESEND_API_KEY="re_placeholder"
           
-          # Cloudinary (Placeholder)
+          # Cloudinary (placeholder - not functional in static export)
           CLOUDINARY_CLOUD_NAME="placeholder"
           CLOUDINARY_API_KEY="placeholder"
           CLOUDINARY_API_SECRET="placeholder"
