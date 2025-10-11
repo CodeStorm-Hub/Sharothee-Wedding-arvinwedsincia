@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:github": "next build && next export",
+    "build:static": "bash scripts/prepare-static-build.sh && next build && bash scripts/restore-after-build.sh",
+    "build:github": "npm run build:static",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
