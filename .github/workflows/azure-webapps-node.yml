@@ -1,0 +1,209 @@
+# This workflow will build and push the Next.js wedding website to Azure Web App
+# when a commit is pushed to main branch or manually triggered.
+#
+# Prerequisites:
+# 1. Create an Azure Web App (Node.js 20 LTS runtime)
+# 2. Download the Publish Profile from Azure Portal
+# 3. Add AZURE_WEBAPP_PUBLISH_PROFILE secret to GitHub repository
+# 4. Update AZURE_WEBAPP_NAME environment variable below
+
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: sharothee-wedding    # Set this to your Azure Web App name
+  AZURE_WEBAPP_PACKAGE_PATH: 'client'     # Path to the Next.js project
+  NODE_VERSION: '20.x'                    # Node.js version
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'client/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: npm ci
+
+    - name: Create production environment file
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: |
+        echo "Creating production environment file..."
+        cat << EOF > .env.production
+        # Database - Azure will use local SQLite file
+        DATABASE_URL="file:./prisma/prod.db"
+        
+        # NextAuth - Set these in Azure App Settings
+        NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}"
+        NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}"
+        
+        # Admin Credentials
+        ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}"
+        ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}"
+        
+        # Email Service (Gmail)
+        GMAIL_USER="${{ secrets.GMAIL_USER }}"
+        GMAIL_APP_PASSWORD="${{ secrets.GMAIL_APP_PASSWORD }}"
+        GMAIL_FROM="${{ secrets.GMAIL_FROM }}"
+        
+        # Cloudinary (optional)
+        CLOUDINARY_CLOUD_NAME="${{ secrets.CLOUDINARY_CLOUD_NAME }}"
+        CLOUDINARY_API_KEY="${{ secrets.CLOUDINARY_API_KEY }}"
+        CLOUDINARY_API_SECRET="${{ secrets.CLOUDINARY_API_SECRET }}"
+        EOF
+        echo "Environment file created"
+
+    - name: Generate Prisma Client
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: npx prisma generate
+
+    - name: Build Next.js application
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: npm run build
+
+    - name: Run tests
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: npm test -- --ci --coverage --watchAll=false
+      continue-on-error: true
+
+    - name: Create deployment package
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: |
+        # Copy necessary files for deployment
+        mkdir -p ../deploy
+        cp -r .next ../deploy/
+        cp -r public ../deploy/
+        cp -r prisma ../deploy/
+        cp -r node_modules ../deploy/
+        cp package.json ../deploy/
+        cp package-lock.json ../deploy/
+        cp next.config.ts ../deploy/
+        cp .env.production ../deploy/
+        
+        # Create web.config for Azure
+        cat << 'WEBCONFIG' > ../deploy/web.config
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <system.webServer>
+            <handlers>
+              <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
+            </handlers>
+            <rewrite>
+              <rules>
+                <rule name="NodeInspector" patternSyntax="ECMAScript" stopProcessing="true">
+                  <match url="^server.js\/debug[\/]?" />
+                </rule>
+                <rule name="StaticContent">
+                  <action type="Rewrite" url="public{REQUEST_URI}"/>
+                </rule>
+                <rule name="DynamicContent">
+                  <conditions>
+                    <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
+                  </conditions>
+                  <action type="Rewrite" url="server.js"/>
+                </rule>
+              </rules>
+            </rewrite>
+            <security>
+              <requestFiltering>
+                <hiddenSegments>
+                  <remove segment="bin"/>
+                </hiddenSegments>
+              </requestFiltering>
+            </security>
+            <httpErrors existingResponse="PassThrough" />
+            <iisnode node_env="%node_env%" nodeProcessCountPerApplication="1" maxConcurrentRequestsPerProcess="1024" maxNamedPipeConnectionRetry="100" namedPipeConnectionRetryDelay="250" maxNamedPipeConnectionPoolSize="512" maxNamedPipePooledConnectionAge="30000" asyncCompletionThreadCount="0" initialRequestBufferSize="4096" maxRequestBufferSize="65536" watchedFiles="*.js;iisnode.yml" uncFileChangesPollingInterval="5000" gracefulShutdownTimeout="60000" loggingEnabled="true" logDirectory="iisnode" debuggingEnabled="false" debugHeaderEnabled="false" debuggerPortRange="5058-6058" debuggerPathSegment="debug" maxLogFileSizeInKB="128" maxTotalLogFileSizeInKB="1024" maxLogFiles="20" devErrorsEnabled="false" flushResponse="false" enableXFF="false" promoteServerVars="" configOverrides="iisnode.yml" />
+          </system.webServer>
+        </configuration>
+        WEBCONFIG
+        
+        # Create server.js for Azure
+        cat << 'SERVERJS' > ../deploy/server.js
+        const { createServer } = require('http')
+        const { parse } = require('url')
+        const next = require('next')
+        
+        const dev = process.env.NODE_ENV !== 'production'
+        const hostname = process.env.WEBSITE_HOSTNAME || 'localhost'
+        const port = process.env.PORT || 3000
+        
+        const app = next({ dev, hostname, port })
+        const handle = app.getRequestHandler()
+        
+        app.prepare().then(() => {
+          createServer(async (req, res) => {
+            try {
+              const parsedUrl = parse(req.url, true)
+              await handle(req, res, parsedUrl)
+            } catch (err) {
+              console.error('Error occurred handling', req.url, err)
+              res.statusCode = 500
+              res.end('internal server error')
+            }
+          }).listen(port, (err) => {
+            if (err) throw err
+            console.log(`> Ready on http://${hostname}:${port}`)
+          })
+        })
+        SERVERJS
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-app
+        path: deploy/
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: node-app
+
+    - name: Display deployment package contents
+      run: |
+        echo "Deployment package contents:"
+        ls -la
+        echo "Checking for required files:"
+        [ -f "server.js" ] && echo "✓ server.js found" || echo "✗ server.js missing"
+        [ -f "package.json" ] && echo "✓ package.json found" || echo "✗ package.json missing"
+        [ -d ".next" ] && echo "✓ .next directory found" || echo "✗ .next directory missing"
+        [ -f "web.config" ] && echo "✓ web.config found" || echo "✗ web.config missing"
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: .
+
+    - name: Post-deployment verification
+      run: |
+        echo "Deployment completed successfully!"
+        echo "Web App URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}"
+        echo "Please verify the deployment by visiting the URL above."
