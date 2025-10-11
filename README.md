@@ -46,7 +46,28 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 
 ## 🌐 Live Deployments
 
-### Vercel (Full-Stack) - **🌟 RECOMMENDED - Complete Features** 
+### Microsoft Azure (Full-Stack) - **🌟 NEW - Enterprise-Grade Hosting**
+- **Deployment**: Automated via GitHub Actions using GitHub-hosted runners (Ubuntu)
+- **Setup Time**: 30 minutes
+- **Cost**: FREE tier (12 months) then ~$13/month
+- **Features**: 
+  - ✅ **ALL pages** (Home, Events, Gallery, Live, Travel, Contact, RSVP, Admin)
+  - ✅ **Working database** (SQLite - stores RSVP submissions, guest data)
+  - ✅ **All API routes** (18 endpoints for forms, auth, data management)
+  - ✅ **Admin dashboard** with NextAuth authentication
+  - ✅ **Email notifications** (RSVP confirmations, contact messages)
+  - ✅ **Image uploads** (Cloudinary integration)
+  - ✅ **All images and galleries** working perfectly
+  - ✅ **Fully mobile responsive**
+  - ✅ **Enterprise reliability** (99.95% SLA)
+  - ✅ **Automatic SSL** certificate
+  - ✅ **Application Insights** monitoring
+  - ✅ **Continuous deployment** from GitHub
+- **Quick Setup**: See [`QUICK_DEPLOY_AZURE.md`](QUICK_DEPLOY_AZURE.md) (30-minute guide)
+- **Full Guide**: See [`AZURE_DEPLOYMENT_GUIDE.md`](AZURE_DEPLOYMENT_GUIDE.md) (complete documentation)
+- **Build**: Uses GitHub-hosted runners (Ubuntu Linux VMs) via GitHub Actions
+
+### Vercel (Full-Stack) - **Fast & Simple** 
 - **Deployment**: Automated via GitHub Actions using GitHub-hosted runners (Ubuntu)
 - **Setup Time**: 12 minutes
 - **Cost**: FREE (no credit card required)
@@ -87,7 +108,7 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 
 ### Hostinger VPS (Full-Stack Alternative)
 - **Features**:
-  - ✅ Everything from Vercel
+  - ✅ Everything from Azure/Vercel
   - ✅ Uses MySQL instead of SQLite
   - ✅ Media uploads with Cloudinary
   - ✅ Advanced RSVP management
