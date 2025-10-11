@@ -46,7 +46,27 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 
 ## 🌐 Live Deployments
 
-### GitHub Pages (Static) - **Recommended for Quick Deploy** ⚡
+### Vercel (Full-Stack) - **🌟 RECOMMENDED - Complete Features** 
+- **Deployment**: Automated via GitHub Actions using GitHub-hosted runners (Ubuntu)
+- **Setup Time**: 12 minutes
+- **Cost**: FREE (no credit card required)
+- **Features**: 
+  - ✅ **ALL pages** (Home, Events, Gallery, Live, Travel, Contact, RSVP, Admin)
+  - ✅ **Working database** (SQLite - stores RSVP submissions, guest data)
+  - ✅ **All API routes** (18 endpoints for forms, auth, data management)
+  - ✅ **Admin dashboard** with NextAuth authentication
+  - ✅ **Email notifications** (RSVP confirmations, contact messages)
+  - ✅ **Image uploads** (Cloudinary integration)
+  - ✅ **All images and galleries** working perfectly
+  - ✅ **Fully mobile responsive**
+  - ✅ **Fast loading** with global CDN
+  - ✅ **Automatic SSL** certificate
+  - ✅ **Continuous deployment** from GitHub
+- **Quick Setup**: See [`QUICK_DEPLOY_VERCEL.md`](QUICK_DEPLOY_VERCEL.md) (12-minute guide)
+- **Full Guide**: See [`VERCEL_DEPLOYMENT_GUIDE.md`](VERCEL_DEPLOYMENT_GUIDE.md) (complete documentation)
+- **Build**: Uses GitHub-hosted runners (Ubuntu Linux VMs) via GitHub Actions
+
+### GitHub Pages (Static) - **For Simple Static Site** ⚡
 - **URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
 - **Deployment**: Automated via GitHub Actions
 - **Features**: 
@@ -61,15 +81,14 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
   - ❌ No admin panel (requires server)
   - ❌ No database storage (forms send emails only)
   - ❌ No authentication system
+  - ❌ No API routes
 - **Quick Setup**: See [`QUICK_DEPLOY_GITHUB_PAGES.md`](QUICK_DEPLOY_GITHUB_PAGES.md) (5 minutes)
-- **Full Guide**: See [`GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md`](GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md) (complete documentation)
-- **Testing**: See [`TESTING_GUIDE.md`](TESTING_GUIDE.md) (post-deployment verification)
+- **Full Guide**: See [`GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md`](GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md)
 
-### Hostinger VPS (Full-Stack) - **For Complete Functionality**
+### Hostinger VPS (Full-Stack Alternative)
 - **Features**:
-  - ✅ Everything from GitHub Pages
-  - ✅ Admin dashboard with authentication
-  - ✅ Database storage (MySQL)
+  - ✅ Everything from Vercel
+  - ✅ Uses MySQL instead of SQLite
   - ✅ Media uploads with Cloudinary
   - ✅ Advanced RSVP management
 - **Setup Guide**: See `HOSTINGER_VPS_DEPLOYMENT_PLAN.md`
