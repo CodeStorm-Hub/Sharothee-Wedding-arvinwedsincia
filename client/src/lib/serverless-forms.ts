@@ -149,18 +149,29 @@ async function submitViaWeb3Forms(
     formData.append('access_key', accessKey);
     formData.append('subject', `${formType} Submission - Incia & Arvin's Wedding`);
     formData.append('from_name', 'Wedding Website');
-    formData.append('to_email', 'arvincia@sparrow-group.com'); // Primary recipient
+    
+    // Set from email to codestromhub@gmail.com
+    formData.append('from_email', 'codestromhub@gmail.com');
+    
+    // CC arvincia@sparrow-group.com on all form submissions
+    formData.append('cc', 'arvincia@sparrow-group.com');
     
     // Add form-specific data
     if (formType === 'RSVP') {
       const rsvpData = data as RSVPFormData;
+      const userEmail = rsvpData.contact?.email || rsvpData.email || 'codestromhub@gmail.com';
+      
+      // Send email to the user who submitted the form
+      formData.append('email', userEmail);
       formData.append('name', rsvpData.guestName || 'Guest');
-      formData.append('email', rsvpData.contact?.email || rsvpData.email || '');
       formData.append('message', formatRSVPMessage(rsvpData));
     } else {
       const contactData = data as ContactFormData;
+      const userEmail = contactData.email || 'codestromhub@gmail.com';
+      
+      // Send email to the user who submitted the form
+      formData.append('email', userEmail);
       formData.append('name', contactData.name || 'Guest');
-      formData.append('email', contactData.email || '');
       formData.append('message', contactData.message || '');
       formData.append('phone', contactData.phone || '');
     }

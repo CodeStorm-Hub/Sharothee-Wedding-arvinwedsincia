@@ -4,7 +4,7 @@
 
 ### 1. Get Web3Forms Key (2 minutes)
 1. Visit https://web3forms.com
-2. Sign up with arvincia@sparrow-group.com
+2. Sign up with **codestromhub@gmail.com**
 3. Copy your access key
 
 ### 2. Add to GitHub (1 minute)
@@ -24,8 +24,8 @@ Wait 2-3 minutes, then visit:
 ## ✅ What's Included
 
 - 💒 Beautiful wedding website
-- 📧 Working RSVP form (emails to arvincia@sparrow-group.com)
-- 📧 Working Contact form (emails to arvincia@sparrow-group.com)
+- 📧 Working RSVP form (from: codestromhub@gmail.com, cc: arvincia@sparrow-group.com)
+- 📧 Working Contact form (from: codestromhub@gmail.com, cc: arvincia@sparrow-group.com)
 - 🖼️ All images loading correctly
 - 📱 Mobile responsive
 - 🆓 Free hosting

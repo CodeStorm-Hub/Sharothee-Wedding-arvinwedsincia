@@ -55,9 +55,15 @@ The code automatically detects which mode it's running in and adapts accordingly
 ### Sign Up Process
 1. Go to [https://web3forms.com](https://web3forms.com)
 2. Click "Create Form"
-3. Enter your email (arvincia@sparrow-group.com)
+3. Enter your email (**codestromhub@gmail.com**)
 4. Verify your email
 5. Copy your **Access Key** (starts with random characters)
+
+### Email Configuration
+- **From:** codestromhub@gmail.com
+- **To:** User's email (from form submission)
+- **CC:** arvincia@sparrow-group.com (receives all form notifications)
+- **Subject:** RSVP/Contact Submission - Incia & Arvin's Wedding
 
 ### Add to GitHub Secrets
 1. Go to your repository on GitHub

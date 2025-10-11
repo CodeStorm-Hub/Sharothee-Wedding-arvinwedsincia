@@ -28,7 +28,7 @@ Your wedding website is now **ready for GitHub Pages deployment** with full func
 ### 📦 What's Included
 
 ✅ All public pages (Home, Events, Gallery, RSVP, Contact, Travel, Live)
-✅ Working forms (send emails to arvincia@sparrow-group.com)
+✅ Working forms (from: codestromhub@gmail.com, cc: arvincia@sparrow-group.com)
 ✅ All images loading correctly
 ✅ Mobile responsive design
 ✅ Automatic deployment via GitHub Actions
@@ -39,7 +39,7 @@ Your wedding website is now **ready for GitHub Pages deployment** with full func
 
 1. Visit https://web3forms.com
 2. Click "Create Form"
-3. Enter email: **arvincia@sparrow-group.com**
+3. Enter email: **codestromhub@gmail.com**
 4. Verify email and get your Access Key
 
 ### Step 2: Add to GitHub (1 minute)
@@ -97,14 +97,18 @@ Once deployed, test these features:
 - [ ] All fields validate
 - [ ] Submit button works
 - [ ] Success message appears
-- [ ] Email arrives at arvincia@sparrow-group.com
+- [ ] Email sent from codestromhub@gmail.com
+- [ ] Email CC'd to arvincia@sparrow-group.com
+- [ ] Email sent to user's email address (from form)
 
 ### Contact Form
 - [ ] Form loads at `/contact/`
 - [ ] Subject dropdown works
 - [ ] Validation works
 - [ ] Submit succeeds
-- [ ] Email arrives at arvincia@sparrow-group.com
+- [ ] Email sent from codestromhub@gmail.com
+- [ ] Email CC'd to arvincia@sparrow-group.com
+- [ ] Email sent to user's email address (from form)
 
 ### Other Pages
 - [ ] Events page loads
@@ -137,8 +141,10 @@ Route (app)                Size  First Load JS
 
 ### Email Notifications
 When someone submits a form:
-- ✅ Email sent to arvincia@sparrow-group.com
-- ✅ Subject: "RSVP Submission - Incia & Arvin's Wedding" or "Contact Request"
+- ✅ Email sent from codestromhub@gmail.com
+- ✅ Email sent to user's email (from form submission)
+- ✅ Email CC'd to arvincia@sparrow-group.com
+- ✅ Subject: "RSVP Submission - Incia & Arvin's Wedding" or "Contact Submission - Incia & Arvin's Wedding"
 - ✅ Body contains all form data
 
 ## ⚠️ Important Notes
