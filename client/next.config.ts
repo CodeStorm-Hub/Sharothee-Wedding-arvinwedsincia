@@ -1,28 +1,29 @@
 import type { NextConfig } from "next";
 
-// Determine if we're building for GitHub Pages
-const isGitHubPages = process.env.GITHUB_PAGES === 'true' || process.env.GITHUB_ACTIONS === 'true';
+// Determine if we're building for static GitHub Pages (only when explicitly set)
+const isGitHubPages = process.env.DEPLOY_TARGET === 'github-pages';
 
 // Base path for GitHub Pages deployment
 const basePath = isGitHubPages ? '/Sharothee-Wedding-arvinwedsincia' : '';
 
 const nextConfig: NextConfig = {
-  // Enable static export for GitHub Pages deployment
-  output: 'export',
+  // Only enable static export for GitHub Pages deployment
+  // For VPS/production deployment, we need server-side features (API routes, NextAuth)
+  ...(isGitHubPages ? { output: 'export' as const } : {}),
   
-  // Configure for GitHub Pages subdirectory deployment
-  basePath: basePath,
-  assetPrefix: basePath,
+  // Configure for GitHub Pages subdirectory deployment (only when needed)
+  ...(isGitHubPages ? {
+    basePath: basePath,
+    assetPrefix: basePath,
+    trailingSlash: true,
+  } : {}),
   
-  // Add trailing slash for GitHub Pages compatibility
-  trailingSlash: true,
-  
-  // Output directory for static export
+  // Output directory
   distDir: '.next',
   
-  // Optimize images - unoptimized for static export
+  // Optimize images - unoptimized only for static export
   images: {
-    unoptimized: true,
+    unoptimized: isGitHubPages,
   },
   
   // Experimental features
@@ -33,6 +34,7 @@ const nextConfig: NextConfig = {
   // Environment variables available to the browser
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_API_AVAILABLE: isGitHubPages ? 'false' : 'true',
   },
 };
 

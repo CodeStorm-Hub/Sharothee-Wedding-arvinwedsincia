@@ -41,7 +41,8 @@ export function isStaticMode(): boolean {
   if (typeof window === 'undefined') return false;
   // Check if API routes are available by testing environment
   const isGitHubPages = window.location.hostname.includes('github.io');
-  return isGitHubPages || !process.env.NEXT_PUBLIC_API_AVAILABLE;
+  const apiAvailable = process.env.NEXT_PUBLIC_API_AVAILABLE === 'true';
+  return isGitHubPages || !apiAvailable;
 }
 
 /**
