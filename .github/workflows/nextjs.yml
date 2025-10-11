@@ -113,7 +113,7 @@ jobs:
       - name: Build with Next.js (static export)
         working-directory: ./client
         env:
-          GITHUB_PAGES: "true"
+          DEPLOY_TARGET: "github-pages"
         run: npm run build:static
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
