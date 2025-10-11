@@ -83,9 +83,9 @@ jobs:
         working-directory: ./client
         run: |
           echo "Creating environment file for build..."
-          # NOTE: These values are placeholders only to satisfy build requirements
-          # Since static export is disabled, this workflow won't actually deploy
-          # In production, use proper secrets and Hostinger VPS deployment
+          # NOTE: These values are placeholders to satisfy build requirements
+          # Static export doesn't use these at runtime (no server-side functionality)
+          # For full backend functionality, use Hostinger VPS deployment
           cat << EOF > .env.local
           # Database (placeholder - not functional in static export)
           DATABASE_URL="file:./prisma/dev.db"
