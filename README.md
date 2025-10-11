@@ -195,7 +195,39 @@ client/
 
 ## 🚀 Deployment
 
-### GitHub Pages (Static Site)
+### Option 1: Self-Hosted VPS (Recommended for Full-Stack) ⭐
+
+**Automated deployment using GitHub Actions with self-hosted runner**
+
+For complete functionality with API routes, authentication, database, email forms, and image uploads:
+
+```bash
+# Setup once (see SELF_HOSTED_RUNNER_SETUP.md for details):
+# 1. Configure self-hosted runner on VPS
+# 2. Add GitHub Secrets
+# 3. Push to main - automatic deployment!
+
+git push origin main  # Triggers automatic deployment
+```
+
+**Features**:
+- ✅ Automated CI/CD with GitHub Actions
+- ✅ Zero-downtime deployments with PM2
+- ✅ Automatic backups before each deployment
+- ✅ Health checks and verification
+- ✅ Working email forms (RSVP, Contact)
+- ✅ Image uploads with Cloudinary
+- ✅ Admin dashboard with authentication
+- ✅ Full database functionality
+
+**Setup Guides**:
+- `SELF_HOSTED_RUNNER_SETUP.md` - Complete setup instructions
+- `SELF_HOSTED_DEPLOYMENT.md` - Deployment workflow documentation
+- `DEPLOYMENT_CHECKLIST_SELF_HOSTED.md` - Quick reference checklist
+
+### Option 2: GitHub Pages (Static Site)
+
+**Simple static deployment for informational pages only**
 
 The website is automatically deployed to GitHub Pages on every push to `main`:
 
@@ -209,15 +241,24 @@ npm run build:static
 
 **Live URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
 
-See `GITHUB_PAGES_DEPLOYMENT.md` for complete deployment documentation.
+**Features**:
+- ✅ All informational pages
+- ✅ Basic RSVP/Contact forms (via Web3Forms)
+- ✅ Photo galleries
+- ✅ Event schedules
+- ❌ No admin panel
+- ❌ No database storage
+- ❌ Limited form functionality
 
-### Hostinger VPS (Full-Stack)
+**Setup Guide**: `GITHUB_PAGES_DEPLOYMENT.md`
 
-For full functionality with API routes, authentication, and database:
+### Option 3: Manual VPS Deployment
+
+For manual deployment to Hostinger VPS:
 
 ```bash
 # Follow VPS deployment instructions
-# See HOSTINGER_VPS_DEPLOYMENT_PLAN.md
+# See docs/copilot's docs/HOSTINGER_VPS_DEPLOYMENT_PLAN.md
 ```
 
 ## 🤝 Contributing
