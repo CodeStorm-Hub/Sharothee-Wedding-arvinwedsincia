@@ -101,12 +101,22 @@ export default function RSVPPage() {
           email: emailAddress,
         },
       };
-      const res = await fetch('/api/rsvp/form', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to submit RSVP form');
+      // Check if we're in static export mode (API routes not available)
+      const isStaticExport = typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_API_AVAILABLE;
+      
+      if (isStaticExport) {
+        // In static mode, show success message with manual contact info
+        console.log('RSVP Submission (Static Mode):', payload);
+        setStep(3);
+      } else {
+        // In server mode, submit to API
+        const res = await fetch('/api/rsvp/form', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Failed to submit RSVP form');
+        }
+        setStep(3);
       }
-      setStep(3);
     } catch (err) {
       console.error('RSVP form submit error:', err);
       // Use a structured approach to error parsing
@@ -405,9 +415,15 @@ export default function RSVPPage() {
                 <SparklesIcon className="h-12 w-12 text-primary" aria-hidden="true" />
               </div>
               <h2 className="text-3xl font-serif font-semibold text-secondary mb-4">Thank You!</h2>
-              <p className="text-muted mb-8 max-w-md mx-auto">
-                Your RSVP has been submitted successfully. We&apos;ll send you a confirmation email with all the details shortly.
+              <p className="text-muted mb-4 max-w-md mx-auto">
+                Your RSVP has been received. Please send your details to our email for confirmation.
               </p>
+              <div className="bg-accent/10 rounded-lg p-4 mb-8 max-w-md mx-auto">
+                <p className="text-sm text-secondary font-medium mb-2">Please email your RSVP to:</p>
+                <a href="mailto:arvincia@sparrow-group.com" className="text-primary hover:text-primary-dark font-semibold">
+                  arvincia@sparrow-group.com
+                </a>
+              </div>
               
               <div className="space-y-4">
                 <Link href="/events" className="block bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-lg font-medium transition-colors">

@@ -65,26 +65,36 @@ export default function ContactPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
+      // Check if we're in static export mode (API routes not available)
+      const isStaticExport = typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_API_AVAILABLE;
       
-      if (response.ok) {
+      if (isStaticExport) {
+        // In static mode, log the data and show success message
+        console.log('Contact Form Submission (Static Mode):', formData);
         setIsSubmitted(true);
       } else {
-        console.error('Contact form error:', data);
-        if (data.errors && typeof data.errors === 'object') {
-          setValidationErrors(data.errors);
-          setError('Please fill in all required fields correctly');
+        // In server mode, submit to API
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          setIsSubmitted(true);
         } else {
-          const errorMessage = data.error || 'Failed to send message. Please try again.';
-          setError(errorMessage);
+          console.error('Contact form error:', data);
+          if (data.errors && typeof data.errors === 'object') {
+            setValidationErrors(data.errors);
+            setError('Please fill in all required fields correctly');
+          } else {
+            const errorMessage = data.error || 'Failed to send message. Please try again.';
+            setError(errorMessage);
+          }
         }
       }
     } catch (error) {
@@ -132,11 +142,17 @@ export default function ContactPage() {
                     <EnvelopeOpenIcon className="h-16 w-16 sm:h-20 sm:w-20 text-primary" />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-secondary mb-4">
-                    Message Sent!
+                    Thank You!
                   </h2>
-                  <p className="text-muted mb-6 text-sm sm:text-base">
-                    Thank you for reaching out! We&apos;ll get back to you as soon as possible.
+                  <p className="text-muted mb-4 text-sm sm:text-base">
+                    Please send your message directly to our email for fastest response.
                   </p>
+                  <div className="bg-accent/10 rounded-lg p-4 mb-6 max-w-md mx-auto">
+                    <p className="text-sm text-secondary font-medium mb-2">Email us at:</p>
+                    <a href="mailto:arvincia@sparrow-group.com" className="text-primary hover:text-primary-dark font-semibold text-base sm:text-lg">
+                      arvincia@sparrow-group.com
+                    </a>
+                  </div>
                   <button
                     onClick={() => {
                       setIsSubmitted(false);

@@ -1,12 +1,10 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
+# Workflow for building and deploying a static Next.js site to GitHub Pages
 #
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
-# NOTE: This workflow is currently NOT FUNCTIONAL for this project because:
-# - Static export (output: 'export') is disabled due to NextAuth incompatibility
-# - The application requires server-side functionality (API routes, authentication)
-# - For production deployment, use Hostinger VPS deployment instead
-# - See HOSTINGER_VPS_DEPLOYMENT_PLAN.md and ci-cd-pipeline.yml for proper deployment
+# NOTE: This workflow builds a static-only version of the site without:
+# - API routes (forms will show email contact information instead)
+# - Admin pages (authentication requires server-side functionality)
+# - For full-featured deployment with backend, use Hostinger VPS deployment
+# - See HOSTINGER_VPS_DEPLOYMENT_PLAN.md and ci-cd-pipeline.yml for server deployment
 #
 name: Deploy Next.js site to Pages
 
@@ -85,9 +83,9 @@ jobs:
         working-directory: ./client
         run: |
           echo "Creating environment file for build..."
-          # NOTE: These values are placeholders only to satisfy build requirements
-          # Since static export is disabled, this workflow won't actually deploy
-          # In production, use proper secrets and Hostinger VPS deployment
+          # NOTE: These values are placeholders to satisfy build requirements
+          # Static export doesn't use these at runtime (no server-side functionality)
+          # For full backend functionality, use Hostinger VPS deployment
           cat << EOF > .env.local
           # Database (placeholder - not functional in static export)
           DATABASE_URL="file:./prisma/dev.db"
@@ -108,13 +106,13 @@ jobs:
       - name: Generate Prisma client
         working-directory: ./client
         run: npx prisma generate
-      - name: Build with Next.js
+      - name: Build with Next.js (static export)
         working-directory: ./client
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        run: npm run build:static
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./client/.next
+          path: ./client/out
 
   # Deployment job
   deploy:

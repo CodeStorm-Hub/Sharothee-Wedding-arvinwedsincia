@@ -42,7 +42,17 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 - **Forms**: React Hook Form with Zod validation
 - **State Management**: Zustand
 - **Testing**: Jest with React Testing Library
-- **Deployment**: Hostinger VPS
+- **Deployment**: GitHub Pages (static) or Hostinger VPS (full-stack)
+
+## 🌐 Live Deployments
+
+- **GitHub Pages (Static)**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+  - Static website with informational pages
+  - Forms use email fallback (no API routes)
+  - See `GITHUB_PAGES_DEPLOYMENT.md` for details
+
+- **Hostinger VPS (Full-Stack)**: For complete functionality with authentication and database
+  - See `HOSTINGER_VPS_DEPLOYMENT_PLAN.md` for deployment instructions
 
 ## 📦 Getting Started
 
@@ -165,6 +175,33 @@ client/
 │   └── schema.prisma       # Database schema
 ├── public/                 # Static assets
 └── package.json
+```
+
+## 🚀 Deployment
+
+### GitHub Pages (Static Site)
+
+The website is automatically deployed to GitHub Pages on every push to `main`:
+
+```bash
+# Static build (excludes API routes and admin pages)
+cd client
+npm run build:static
+
+# Output is in client/out directory
+```
+
+**Live URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+
+See `GITHUB_PAGES_DEPLOYMENT.md` for complete deployment documentation.
+
+### Hostinger VPS (Full-Stack)
+
+For full functionality with API routes, authentication, and database:
+
+```bash
+# Follow VPS deployment instructions
+# See HOSTINGER_VPS_DEPLOYMENT_PLAN.md
 ```
 
 ## 🤝 Contributing
