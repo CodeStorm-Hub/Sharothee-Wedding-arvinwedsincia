@@ -95,3 +95,23 @@ export function validateRSVPToken(token: string): boolean {
 export function sanitizePhoneNumber(phone: string): string {
   return phone.replace(/\D/g, '');
 }
+
+/**
+ * Get the base path for the application
+ * Returns the configured basePath in production, empty string in development
+ */
+export function getBasePath(): string {
+  // Use the public environment variable set by Next.js config
+  return process.env.NEXT_PUBLIC_BASE_PATH || '';
+}
+
+/**
+ * Create a basePath-aware asset URL
+ * Use this for all static assets (images, videos, etc.)
+ */
+export function assetUrl(path: string): string {
+  const basePath = getBasePath();
+  // Ensure path starts with /
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${basePath}${normalizedPath}`;
+}

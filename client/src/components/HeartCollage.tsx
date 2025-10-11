@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { assetUrl } from '@/lib/utils';
 
 interface HeartCollageProps {
   coupleImage?: string;
@@ -7,8 +8,8 @@ interface HeartCollageProps {
 }
 
 const HeartCollage: React.FC<HeartCollageProps> = ({ 
-  coupleImage = '/images/heart/couple.jpeg',
-  cakeImage = '/images/heart/cake.jpeg'
+  coupleImage = assetUrl('/images/heart/couple.jpeg'),
+  cakeImage = assetUrl('/images/heart/cake.jpeg')
 }) => {
   return (
     <div className="relative flex justify-center items-center py-8 sm:py-12 animate-scaleIn">

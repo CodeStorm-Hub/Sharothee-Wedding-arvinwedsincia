@@ -5,6 +5,7 @@ import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { useState } from "react";
 import { EnvelopeOpenIcon } from '@heroicons/react/24/outline'
+import { submitContactForm } from '@/lib/serverless-forms'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -65,37 +66,13 @@ export default function ContactPage() {
     setIsSubmitting(true);
     
     try {
-      // Check if we're in static export mode (API routes not available)
-      const isStaticExport = typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_API_AVAILABLE;
+      // Use serverless form submission (works in both static and server modes)
+      const result = await submitContactForm(formData);
       
-      if (isStaticExport) {
-        // In static mode, log the data and show success message
-        console.log('Contact Form Submission (Static Mode):', formData);
+      if (result.success) {
         setIsSubmitted(true);
       } else {
-        // In server mode, submit to API
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-          setIsSubmitted(true);
-        } else {
-          console.error('Contact form error:', data);
-          if (data.errors && typeof data.errors === 'object') {
-            setValidationErrors(data.errors);
-            setError('Please fill in all required fields correctly');
-          } else {
-            const errorMessage = data.error || 'Failed to send message. Please try again.';
-            setError(errorMessage);
-          }
-        }
+        setError(result.message || 'Failed to send message. Please try again.');
       }
     } catch (error) {
       console.error('Contact form error:', error);
