@@ -1,10 +1,23 @@
 # Workflow for building and deploying a static Next.js site to GitHub Pages
 #
-# NOTE: This workflow builds a static-only version of the site without:
-# - API routes (forms will show email contact information instead)
-# - Admin pages (authentication requires server-side functionality)
-# - For full-featured deployment with backend, use Hostinger VPS deployment
-# - See HOSTINGER_VPS_DEPLOYMENT_PLAN.md and ci-cd-pipeline.yml for server deployment
+# FEATURES:
+# ✅ All public-facing pages (Home, Events, Gallery, Live, Travel, Contact, RSVP)
+# ✅ Working contact and RSVP forms (using Web3Forms API)
+# ✅ All images and static assets
+# ✅ Responsive design and mobile-friendly
+#
+# SETUP REQUIRED:
+# 1. Get free Web3Forms API key from https://web3forms.com
+# 2. Add as repository secret: WEB3FORMS_ACCESS_KEY
+# 3. Enable GitHub Pages in repository Settings → Pages → Source: GitHub Actions
+#
+# EXCLUDED (requires server):
+# ❌ API routes (not supported in static export)
+# ❌ Admin pages (require authentication)
+# ❌ Database operations
+#
+# For full-featured deployment with backend, see HOSTINGER_VPS_DEPLOYMENT_PLAN.md
+# For quick setup instructions, see QUICK_DEPLOY_GITHUB_PAGES.md
 #
 name: Deploy Next.js site to Pages
 
@@ -102,11 +115,13 @@ jobs:
           CLOUDINARY_API_KEY="placeholder"
           CLOUDINARY_API_SECRET="placeholder"
           
-          # Web3Forms for static form submissions (optional - add your key)
-          # Get free key at https://web3forms.com
-          NEXT_PUBLIC_WEB3FORMS_KEY="YOUR_KEY_HERE"
+          # Web3Forms for static form submissions
+          # Get your free access key at https://web3forms.com
+          # Add as repository secret: WEB3FORMS_ACCESS_KEY
+          NEXT_PUBLIC_WEB3FORMS_KEY="${{ secrets.WEB3FORMS_ACCESS_KEY }}"
           EOF
           echo "Environment file created"
+          echo "Web3Forms key configured: ${{ secrets.WEB3FORMS_ACCESS_KEY != '' && 'Yes' || 'No (using fallback)' }}"
       - name: Generate Prisma client
         working-directory: ./client
         run: npx prisma generate
