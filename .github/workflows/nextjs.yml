@@ -2,6 +2,12 @@
 #
 # To get started with Next.js see: https://nextjs.org/docs/getting-started
 #
+# NOTE: This workflow is currently NOT FUNCTIONAL for this project because:
+# - Static export (output: 'export') is disabled due to NextAuth incompatibility
+# - The application requires server-side functionality (API routes, authentication)
+# - For production deployment, use Hostinger VPS deployment instead
+# - See HOSTINGER_VPS_DEPLOYMENT_PLAN.md and ci-cd-pipeline.yml for proper deployment
+#
 name: Deploy Next.js site to Pages
 
 on:
@@ -75,6 +81,30 @@ jobs:
       - name: Install dependencies
         working-directory: ./client
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: Create environment file
+        working-directory: ./client
+        run: |
+          echo "Creating environment file for build..."
+          cat << EOF > .env.local
+          # Database
+          DATABASE_URL="file:./dev.db"
+          
+          # NextAuth
+          NEXTAUTH_SECRET="wedding-pages-deploy-secret"
+          NEXTAUTH_URL="http://localhost:3000"
+          
+          # Email (Placeholder)
+          RESEND_API_KEY="re_placeholder"
+          
+          # Cloudinary (Placeholder)
+          CLOUDINARY_CLOUD_NAME="placeholder"
+          CLOUDINARY_API_KEY="placeholder"
+          CLOUDINARY_API_SECRET="placeholder"
+          EOF
+          echo "Environment file created"
+      - name: Generate Prisma client
+        working-directory: ./client
+        run: npx prisma generate
       - name: Build with Next.js
         working-directory: ./client
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
