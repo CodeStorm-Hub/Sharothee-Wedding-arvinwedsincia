@@ -46,13 +46,29 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 
 ## 🌐 Live Deployments
 
-- **GitHub Pages (Static)**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
-  - Static website with informational pages
-  - Forms use email fallback (no API routes)
-  - See `GITHUB_PAGES_DEPLOYMENT.md` for details
+### GitHub Pages (Static) - **Recommended for Quick Deploy**
+- **URL**: [https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/](https://codestorm-hub.github.io/Sharothee-Wedding-arvinwedsincia/)
+- **Features**: 
+  - ✅ All informational pages
+  - ✅ Working RSVP form (via email)
+  - ✅ Working Contact form (via email)
+  - ✅ Photo galleries
+  - ✅ Event schedules
+  - ✅ Mobile responsive
+- **Limitations**:
+  - ❌ No admin panel (requires server)
+  - ❌ No database storage (forms send emails only)
+  - ❌ No authentication
+- **Setup Guide**: See `GITHUB_PAGES_SETUP.md` or `QUICK_DEPLOY.md`
 
-- **Hostinger VPS (Full-Stack)**: For complete functionality with authentication and database
-  - See `HOSTINGER_VPS_DEPLOYMENT_PLAN.md` for deployment instructions
+### Hostinger VPS (Full-Stack) - **For Complete Functionality**
+- **Features**:
+  - ✅ Everything from GitHub Pages
+  - ✅ Admin dashboard with authentication
+  - ✅ Database storage (MySQL)
+  - ✅ Media uploads with Cloudinary
+  - ✅ Advanced RSVP management
+- **Setup Guide**: See `HOSTINGER_VPS_DEPLOYMENT_PLAN.md`
 
 ## 📦 Getting Started
 

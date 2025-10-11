@@ -4,6 +4,7 @@ import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import Countdown from "@/components/Countdown";
 import HeartCollage from "@/components/HeartCollage";
+import { assetUrl } from "@/lib/utils";
 import { ArrowRightIcon, HeartIcon, CalendarDaysIcon, PhotoIcon, MapPinIcon, EnvelopeIcon, GlobeAmericasIcon, TrophyIcon } from '@heroicons/react/24/outline'
 
 export default function HomePage() {
@@ -132,7 +133,7 @@ export default function HomePage() {
                   {/* Main central photo with warm overlay */}
           <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl mb-4">
                     <Image
-                      src="/images/story/Where It All Began 1.jpeg"
+                      src={assetUrl("/images/story/Where It All Began 1.jpeg")}
                       alt="AISD memories - Where it all began"
                       fill
             className="object-cover object-[50%_24%] sm:object-[50%_28%] lg:object-[50%_32%] scale-[1.06] hover:scale-[1.1] transition-transform duration-700 brightness-110 contrast-105 saturate-105 motion-reduce:transform-none motion-reduce:transition-none"
@@ -148,7 +149,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="relative h-40 sm:h-36 lg:h-36 rounded-xl overflow-hidden shadow-lg md:transform md:-rotate-1 md:hover:rotate-0 transition-transform duration-500 motion-reduce:transform-none motion-reduce:transition-none">
                     <Image
-                      src="/images/story/Where It All Began 2.jpeg"
+                      src={assetUrl("/images/story/Where It All Began 2.jpeg")}
                       alt="AISD school days together"
                       fill
                       className="object-cover scale-[1.1] hover:scale-[1.15] transition-transform duration-700 brightness-125 contrast-110 saturate-110 motion-reduce:transform-none motion-reduce:transition-none"
@@ -159,7 +160,7 @@ export default function HomePage() {
                   </div>
   <div className="relative h-40 sm:h-36 lg:h-36 rounded-xl overflow-hidden shadow-lg md:transform md:rotate-1 md:hover:rotate-0 transition-transform duration-500 motion-reduce:transform-none motion-reduce:transition-none">
                     <Image
-                      src="/images/story/Where It All Began 3.jpeg"
+                      src={assetUrl("/images/story/Where It All Began 3.jpeg")}
                       alt="Early friendship moments"
                       fill
       className="object-cover scale-[1.1] hover:scale-[1.15] transition-transform duration-700 brightness-105 saturate-105 motion-reduce:transform-none motion-reduce:transition-none"
@@ -197,7 +198,7 @@ export default function HomePage() {
                   {/* Shopping/Casual photo */}
                   <div className="relative h-72 lg:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/Love Across Continents 1.jpeg"
+                      src={assetUrl("/images/story/Love Across Continents 1.jpeg")}
                       alt="Casual moments together across continents"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -216,7 +217,7 @@ export default function HomePage() {
                   {/* Marathon/Race photo */}
                   <div className="relative h-72 lg:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/Love Across Continents 2.jpeg"
+                      src={assetUrl("/images/story/Love Across Continents 2.jpeg")}
                       alt="Supporting each other through challenges"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -306,7 +307,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/tuscany-proposal 1.jpg"
+                      src={assetUrl("/images/story/tuscany-proposal 1.jpg")}
                       alt="The magical Tuscany proposal moment"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -318,7 +319,7 @@ export default function HomePage() {
                   </div>
                   <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/tuscany-proposal 2.jpg"
+                      src={assetUrl("/images/story/tuscany-proposal 2.jpg")}
                       alt="Celebration with families in Tuscany"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -349,7 +350,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="relative h-64 lg:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/Building Our Future Together 1.jpeg"
+                      src={assetUrl("/images/story/Building Our Future Together 1.jpeg")}
                       alt="Planning our future together"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -359,7 +360,7 @@ export default function HomePage() {
                   </div>
                   <div className="relative h-64 lg:h-80 rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                      src="/images/story/recent-together.jpg"
+                      src={assetUrl("/images/story/recent-together.jpg")}
                       alt="Recent moments together"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-700 motion-reduce:transform-none motion-reduce:transition-none"
@@ -413,7 +414,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-1.jpg"
+                src={assetUrl("/images/gallery/gallery-1.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -422,7 +423,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-2.jpg"
+                src={assetUrl("/images/gallery/gallery-2.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -431,7 +432,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-3.jpg"
+                src={assetUrl("/images/gallery/gallery-3.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -440,7 +441,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-4.jpg"
+                src={assetUrl("/images/gallery/gallery-4.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -449,7 +450,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-5.jpg"
+                src={assetUrl("/images/gallery/gallery-5.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -458,7 +459,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-6.jpg"
+                src={assetUrl("/images/gallery/gallery-6.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -467,7 +468,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-7.jpg"
+                src={assetUrl("/images/gallery/gallery-7.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -476,7 +477,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
-                src="/images/gallery/gallery-8.jpg"
+                src={assetUrl("/images/gallery/gallery-8.jpg")}
                 alt="Our memories together"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
@@ -516,7 +517,7 @@ export default function HomePage() {
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
                 <video
                   src="/videos/wedding-highlights.mp4"
-                  poster="/images/highlights-thumbnail.jpg"
+                  poster={assetUrl("/images/highlights-thumbnail.jpg")}
                   controls
                   className="w-full h-full object-contain"
                 ></video>
@@ -533,7 +534,7 @@ export default function HomePage() {
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
                 <video
                   src="/videos/wedding-reception.mp4"
-                  poster="/images/reception-thumbnail.jpg"
+                  poster={assetUrl("/images/reception-thumbnail.jpg")}
                   controls
                   className="w-full h-full object-contain"
                 ></video>

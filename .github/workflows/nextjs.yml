@@ -101,6 +101,10 @@ jobs:
           CLOUDINARY_CLOUD_NAME="placeholder"
           CLOUDINARY_API_KEY="placeholder"
           CLOUDINARY_API_SECRET="placeholder"
+          
+          # Web3Forms for static form submissions (optional - add your key)
+          # Get free key at https://web3forms.com
+          NEXT_PUBLIC_WEB3FORMS_KEY="YOUR_KEY_HERE"
           EOF
           echo "Environment file created"
       - name: Generate Prisma client
@@ -108,6 +112,8 @@ jobs:
         run: npx prisma generate
       - name: Build with Next.js (static export)
         working-directory: ./client
+        env:
+          GITHUB_PAGES: "true"
         run: npm run build:static
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

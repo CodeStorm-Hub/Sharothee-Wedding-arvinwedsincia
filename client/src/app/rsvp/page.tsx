@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { HandRaisedIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { submitRSVPForm } from '@/lib/serverless-forms'
 
 export default function RSVPPage() {
   // Always show the simplified RSVP form per spec
@@ -101,21 +102,14 @@ export default function RSVPPage() {
           email: emailAddress,
         },
       };
-      // Check if we're in static export mode (API routes not available)
-      const isStaticExport = typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_API_AVAILABLE;
       
-      if (isStaticExport) {
-        // In static mode, show success message with manual contact info
-        console.log('RSVP Submission (Static Mode):', payload);
+      // Use serverless form submission (works in both static and server modes)
+      const result = await submitRSVPForm(payload);
+      
+      if (result.success) {
         setStep(3);
       } else {
-        // In server mode, submit to API
-        const res = await fetch('/api/rsvp/form', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || 'Failed to submit RSVP form');
-        }
-        setStep(3);
+        throw new Error(result.message || 'Failed to submit RSVP form');
       }
     } catch (err) {
       console.error('RSVP form submit error:', err);

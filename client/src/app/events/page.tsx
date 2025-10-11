@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
+import { assetUrl } from "@/lib/utils";
 import {
   CalendarDaysIcon,
   MapPinIcon,
@@ -293,7 +294,7 @@ export default function EventsPage() {
                         return (
                           <div className="relative rounded-xl overflow-hidden h-48 sm:h-56 lg:h-64 shadow-lg">
                             <Image
-                              src={`/images/event/${img}`}
+                              src={assetUrl(`/images/event/${img}`)}
                               alt={`${event.title} photo`}
                               fill
                               sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
