@@ -151,6 +151,9 @@ async function submitViaWeb3Forms(
     formData.append('subject', `${formType} Submission - Incia & Arvin's Wedding`);
     formData.append('from_name', 'Wedding Website');
     
+    // Send notification email TO codestromhub@gmail.com
+    formData.append('email', 'codestromhub@gmail.com');
+    
     // Set from email to codestromhub@gmail.com
     formData.append('from_email', 'codestromhub@gmail.com');
     
@@ -160,21 +163,21 @@ async function submitViaWeb3Forms(
     // Add form-specific data
     if (formType === 'RSVP') {
       const rsvpData = data as RSVPFormData;
-      const userEmail = rsvpData.contact?.email || rsvpData.email || 'codestromhub@gmail.com';
+      const userEmail = rsvpData.contact?.email || rsvpData.email || 'Not provided';
       
-      // Send email to the user who submitted the form
-      formData.append('email', userEmail);
       formData.append('name', rsvpData.guestName || 'Guest');
       formData.append('message', formatRSVPMessage(rsvpData));
+      // Include submitter's email in the message content
+      formData.append('Submitter Email', userEmail);
     } else {
       const contactData = data as ContactFormData;
-      const userEmail = contactData.email || 'codestromhub@gmail.com';
+      const userEmail = contactData.email || 'Not provided';
       
-      // Send email to the user who submitted the form
-      formData.append('email', userEmail);
       formData.append('name', contactData.name || 'Guest');
       formData.append('message', contactData.message || '');
       formData.append('phone', contactData.phone || '');
+      // Include submitter's email in the message content
+      formData.append('Submitter Email', userEmail);
     }
 
     // Submit to Web3Forms
