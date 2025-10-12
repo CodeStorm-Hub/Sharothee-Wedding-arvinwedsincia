@@ -15,14 +15,19 @@ This guide will get your wedding website live on GitHub Pages in 5 minutes with 
 ### 2️⃣ Configure GitHub Repository (2 minutes)
 
 1. Go to your repository **Settings** → **Secrets and variables** → **Actions**
-2. Click **"New repository secret"**
-3. Name: `WEB3FORMS_ACCESS_KEY`
-4. Value: Paste your Web3Forms access key
-5. Click **"Add secret"**
+2. Click **"New repository secret"** for each of the following:
 
-Now go to **Settings** → **Pages**:
-1. Under "Source", select **"GitHub Actions"**
-2. Click **"Save"**
+**Required Secrets:**
+- **WEB3FORMS_ACCESS_KEY**: Your Web3Forms access key from step 1
+- **GMAIL_USER**: Your Gmail address (e.g., `your-email@gmail.com`)
+- **GMAIL_APP_PASSWORD**: Gmail app password ([Get it here](https://myaccount.google.com/apppasswords))
+  - Note: Requires 2-Factor Authentication enabled on your Google account
+- **GMAIL_FROM**: Display name for emails (e.g., `"Wedding <your-email@gmail.com>"`)
+- **TEST_EMAIL_TO**: Test recipient email address
+
+3. After adding all secrets, go to **Settings** → **Pages**:
+   - Under "Source", select **"GitHub Actions"**
+   - Click **"Save"**
 
 ### 3️⃣ Deploy (1 minute)
 
