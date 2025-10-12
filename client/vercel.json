@@ -53,10 +53,5 @@
       "destination": "/api/health"
     }
   ],
-  "regions": ["iad1"],
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 10
-    }
-  }
+  "regions": ["iad1"]
 }
