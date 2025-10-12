@@ -1,7 +1,7 @@
-# Vercel Web Analytics Implementation Summary
+# Vercel Web Analytics & Speed Insights Implementation Summary
 
 ## Overview
-This document summarizes the successful implementation of Vercel Web Analytics for the Sharothee Wedding website.
+This document summarizes the successful implementation of Vercel Web Analytics and Speed Insights for the Sharothee Wedding website.
 
 ## Implementation Date
 October 12, 2025
@@ -9,26 +9,35 @@ October 12, 2025
 ## Changes Made
 
 ### 1. Package Installation
+
+#### Web Analytics
 - **Package**: `@vercel/analytics@1.5.0`
 - **Installation Command**: `npm install @vercel/analytics`
+- **Location**: Added to `client/package.json` dependencies
+
+#### Speed Insights
+- **Package**: `@vercel/speed-insights@1.1.0`
+- **Installation Command**: `npm install @vercel/speed-insights`
 - **Location**: Added to `client/package.json` dependencies
 
 ### 2. Code Integration
 
 #### File Modified: `client/src/app/layout.tsx`
 
-**Import Added (Line 8):**
+**Imports Added (Lines 8-9):**
 ```typescript
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 ```
 
-**Component Added (Line 68):**
+**Components Added (Lines 69-70):**
 ```typescript
 <Analytics />
+<SpeedInsights />
 ```
 
 **Full Context:**
-The Analytics component is placed at the end of the `<body>` tag, just before the closing tag:
+Both components are placed at the end of the `<body>` tag, just before the closing tag:
 ```tsx
 <body className="font-sans antialiased bg-cream-50 text-gray-800">
   <Providers>
@@ -39,7 +48,8 @@ The Analytics component is placed at the end of the `<body>` tag, just before th
       {children}
     </ErrorBoundary>
   </Providers>
-  <Analytics />  {/* ← Added here */}
+  <Analytics />        {/* ← Web Analytics */}
+  <SpeedInsights />    {/* ← Speed Insights */}
 </body>
 ```
 
@@ -49,8 +59,11 @@ The Analytics component is placed at the end of the `<body>` tag, just before th
 
 **Test Coverage:**
 - ✅ Verifies `@vercel/analytics` is in package.json dependencies
+- ✅ Verifies `@vercel/speed-insights` is in package.json dependencies
 - ✅ Confirms Analytics import in root layout file  
+- ✅ Confirms SpeedInsights import in root layout file
 - ✅ Validates Analytics component placement in body tag
+- ✅ Validates SpeedInsights component placement in body tag
 
 **Test Results:**
 ```
@@ -77,21 +90,30 @@ All tests pass ✓
 ## How It Works
 
 ### Development Environment
-- The Analytics component is a **no-op** in development
+- Both Analytics and SpeedInsights components are **no-op** in development
 - No data is collected locally
 - Zero performance impact during development
 
 ### Production Environment (Vercel)
+
+#### Web Analytics
 When deployed to Vercel, the Analytics component automatically:
 1. **Tracks Page Views**: Uses Next.js App Router for automatic page tracking
 2. **Collects Web Vitals**: Measures CLS, FID, LCP, FCP, TTFB
 3. **Monitors Performance**: Real user monitoring (RUM)
 4. **Analyzes Traffic**: Geographic and device analytics
 
+#### Speed Insights
+When deployed to Vercel, the SpeedInsights component automatically:
+1. **Real User Monitoring**: Tracks actual user experiences
+2. **Performance Scores**: Measures page speed in production
+3. **Web Vitals Tracking**: LCP, FID, CLS, INP, TTFB
+4. **Route-based Analytics**: Per-page performance insights
+
 ### Data Collection
 - **Automatic**: No additional configuration needed
 - **Privacy-Focused**: No cookies, GDPR compliant
-- **Lightweight**: ~1KB gzipped bundle size
+- **Lightweight**: Combined ~2KB gzipped bundle size
 - **Fast**: Non-blocking, async loading
 
 ## Deployment Instructions
@@ -105,37 +127,64 @@ vercel --prod
 git push origin main
 ```
 
-### Step 2: Enable Analytics in Vercel Dashboard
+### Step 2: Enable Analytics & Speed Insights in Vercel Dashboard
 1. Go to Vercel Dashboard
 2. Select your project: "Sharothee-Wedding-arvinwedsincia"
 3. Navigate to **Analytics** tab
 4. Click **Enable Analytics** (if not already enabled)
+5. Navigate to **Speed Insights** tab
+6. Click **Enable Speed Insights** (if not already enabled)
 
-### Step 3: View Analytics Data
+### Step 3: View Analytics & Speed Insights Data
 - Data appears within **24 hours** of first deployment
-- Access via: Vercel Dashboard → Your Project → Analytics
+- Access via: 
+  - Vercel Dashboard → Your Project → Analytics
+  - Vercel Dashboard → Your Project → Speed Insights
 
 ## Features Available
 
-### Web Vitals Monitoring
+### Web Analytics Features
+
+#### Web Vitals Monitoring
 - **Largest Contentful Paint (LCP)**: Page loading performance
 - **First Input Delay (FID)**: Interactivity responsiveness
 - **Cumulative Layout Shift (CLS)**: Visual stability
 - **First Contentful Paint (FCP)**: Initial render time
 - **Time to First Byte (TTFB)**: Server response time
 
-### Audience Analytics
+#### Audience Analytics
 - Page views and unique visitors
 - Geographic distribution
 - Device types (desktop, mobile, tablet)
 - Browser and OS information
 - Referrer sources
 
-### Real-Time Data
+#### Real-Time Data
 - Live visitor tracking
 - Current active users
 - Popular pages
 - Traffic sources
+
+### Speed Insights Features
+
+#### Performance Metrics
+- **Performance Score**: Overall page performance (0-100)
+- **Real User Metrics**: Actual user experiences from field data
+- **Lab Data**: Simulated performance from Lighthouse
+- **Route-specific Insights**: Performance per page/route
+
+#### Core Web Vitals Tracking
+- **Largest Contentful Paint (LCP)**: < 2.5s is good
+- **Interaction to Next Paint (INP)**: < 200ms is good
+- **Cumulative Layout Shift (CLS)**: < 0.1 is good
+- **First Contentful Paint (FCP)**: < 1.8s is good
+- **Time to First Byte (TTFB)**: < 800ms is good
+
+#### Detailed Reports
+- Performance over time graphs
+- Distribution of metrics (P75, P90, P95)
+- Device-type breakdown (desktop vs mobile)
+- Geographic performance comparison
 
 ## Benefits
 
@@ -160,11 +209,19 @@ git push origin main
 ## Technical Details
 
 ### Package Information
-- **Name**: @vercel/analytics
-- **Version**: 1.5.0
-- **Type**: React component
-- **Bundle Size**: ~1KB gzipped
-- **Dependencies**: None (peer: react)
+- **Web Analytics**
+  - Name: @vercel/analytics
+  - Version: 1.5.0
+  - Type: React component
+  - Bundle Size: ~1KB gzipped
+  - Dependencies: None (peer: react)
+
+- **Speed Insights**
+  - Name: @vercel/speed-insights
+  - Version: 1.1.0
+  - Type: Next.js component
+  - Bundle Size: ~1KB gzipped
+  - Dependencies: None (peer: next, react)
 
 ### Integration Type
 - **Method**: React component in root layout
@@ -237,19 +294,21 @@ Post-deployment verification:
 ## Summary
 
 ✅ **Implementation Complete**
-- Package installed: @vercel/analytics@1.5.0
-- Code integrated: Root layout updated
-- Tests created: 3 test cases, all passing
+- Packages installed: 
+  - @vercel/analytics@1.5.0
+  - @vercel/speed-insights@1.1.0
+- Code integrated: Root layout updated with both components
+- Tests created: Test cases for both packages
 - Build verified: Production build successful
 - Ready for deployment: No additional configuration needed
 
 ✅ **Quality Checks**
 - TypeScript: No type errors
 - ESLint: No linting issues
-- Tests: 33/33 passing
+- Tests: All passing
 - Build: 34 routes compiled successfully
 
-🚀 **Next Step**: Deploy to Vercel and enable Analytics in the dashboard
+🚀 **Next Step**: Deploy to Vercel and enable Analytics & Speed Insights in the dashboard
 
 ---
 
