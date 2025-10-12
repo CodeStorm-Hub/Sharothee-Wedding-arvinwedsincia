@@ -12,6 +12,17 @@ import {
   GiftTopIcon,
   TvIcon,
 } from "@heroicons/react/24/outline";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Wedding Events",
+  description: "Discover all the special events for Incia & Arvin's wedding celebration - Mehndi, Wedding Ceremony, Reception, and After-party in Vietnam.",
+  openGraph: {
+    title: "Wedding Events | Incia & Arvin's Wedding",
+    description: "Discover all the special events for Incia & Arvin's wedding celebration",
+    images: ['/images/event/Reception.jpeg'],
+  },
+};
 
 export default function EventsPage() {
   type EventItem = {

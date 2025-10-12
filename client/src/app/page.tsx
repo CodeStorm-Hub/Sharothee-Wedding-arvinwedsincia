@@ -8,8 +8,59 @@ import { assetUrl } from "@/lib/utils";
 import { ArrowRightIcon, HeartIcon, CalendarDaysIcon, PhotoIcon, MapPinIcon, EnvelopeIcon, GlobeAmericasIcon, TrophyIcon } from '@heroicons/react/24/outline'
 
 export default function HomePage() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sharothee-wedding.vercel.app';
+  
+  // JSON-LD structured data for SEO
+  const eventStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: "Incia & Arvin's Wedding",
+    description: 'Join us in celebrating the love story of Incia & Arvin - from childhood friends to forever partners',
+    startDate: '2025-12-16T18:00:00+06:00',
+    endDate: '2025-12-16T23:59:00+06:00',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: 'Dhaka, Bangladesh',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Dhaka',
+        addressCountry: 'BD',
+      },
+    },
+    image: [`${siteUrl}/images/gallery/gallery-1.jpg`],
+    organizer: {
+      '@type': 'Person',
+      name: 'Incia & Arvin',
+    },
+  };
+
+  const breadcrumbStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen overflow-x-hidden">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
+      
       <Navigation />
 
       {/* Hero Section */}

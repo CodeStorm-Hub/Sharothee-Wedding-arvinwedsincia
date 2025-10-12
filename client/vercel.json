@@ -1,5 +1,62 @@
 {
   "buildCommand": "bash scripts/deploy-migrations.sh && npm run build",
   "framework": "nextjs",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=0"
+        }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/healthz",
+      "destination": "/api/health"
+    }
+  ],
+  "regions": ["iad1"],
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 10
+    }
+  }
 }
