@@ -66,10 +66,30 @@ The deployment is automated via `.github/workflows/nextjs.yml`:
 1. Checkout repository
 2. Setup Node.js 20
 3. Install dependencies
-4. Generate Prisma client
-5. Run `npm run build:static`
-6. Upload `client/out` directory to GitHub Pages
-7. Deploy to GitHub Pages
+4. Create environment file with secrets
+5. Generate Prisma client
+6. Run `npm run build:static`
+7. Upload `client/out` directory to GitHub Pages
+8. Deploy to GitHub Pages
+
+### Required GitHub Secrets
+
+To enable email functionality and proper builds, configure these repository secrets:
+
+1. **WEB3FORMS_ACCESS_KEY**: Free API key from [Web3Forms](https://web3forms.com) for contact forms
+2. **GMAIL_USER**: Gmail email address for sending emails (e.g., `your-email@gmail.com`)
+3. **GMAIL_APP_PASSWORD**: Gmail app password (NOT your regular password)
+   - Generate at: [Google Account App Passwords](https://myaccount.google.com/apppasswords)
+   - Requires 2-Factor Authentication enabled
+4. **GMAIL_FROM**: Display name for sent emails (e.g., `"Wedding <email@domain.com>"`)
+5. **TEST_EMAIL_TO**: Test recipient email address
+
+#### How to Add Secrets
+
+1. Go to repository **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret**
+3. Add each secret with its name and value
+4. Secrets are encrypted and not visible after creation
 
 ## Form Handling in Static Mode
 

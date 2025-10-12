@@ -9,7 +9,12 @@
 # SETUP REQUIRED:
 # 1. Get free Web3Forms API key from https://web3forms.com
 # 2. Add as repository secret: WEB3FORMS_ACCESS_KEY
-# 3. Enable GitHub Pages in repository Settings → Pages → Source: GitHub Actions
+# 3. Add Gmail credentials as repository secrets:
+#    - GMAIL_USER: Gmail email address
+#    - GMAIL_APP_PASSWORD: Gmail app password (not regular password)
+#    - GMAIL_FROM: Display name for emails (e.g., "Wedding <email@domain.com>")
+#    - TEST_EMAIL_TO: Test recipient email address
+# 4. Enable GitHub Pages in repository Settings → Pages → Source: GitHub Actions
 #
 # EXCLUDED (requires server):
 # ❌ API routes (not supported in static export)
@@ -110,10 +115,16 @@ jobs:
           # Email (placeholder - not functional in static export)
           RESEND_API_KEY="re_placeholder"
           
-          # Cloudinary (placeholder - not functional in static export)
-          CLOUDINARY_CLOUD_NAME="placeholder"
-          CLOUDINARY_API_KEY="placeholder"
-          CLOUDINARY_API_SECRET="placeholder"
+          # Gmail credentials for email functionality (from GitHub Secrets)
+          GMAIL_USER="${{ secrets.GMAIL_USER }}"
+          GMAIL_APP_PASSWORD="${{ secrets.GMAIL_APP_PASSWORD }}"
+          GMAIL_FROM="${{ secrets.GMAIL_FROM }}"
+          TEST_EMAIL_TO="${{ secrets.TEST_EMAIL_TO }}"
+          
+          # Cloudinary (set to empty for GitHub Pages deployment)
+          CLOUDINARY_CLOUD_NAME=""
+          CLOUDINARY_API_KEY=""
+          CLOUDINARY_API_SECRET=""
           
           # Web3Forms for static form submissions
           # Get your free access key at https://web3forms.com

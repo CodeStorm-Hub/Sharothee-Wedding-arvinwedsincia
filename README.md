@@ -255,6 +255,7 @@ The website automatically deploys to GitHub Pages via GitHub Actions on every pu
 #### Documentation
 
 - **Quick Start**: [`QUICK_DEPLOY_GITHUB_PAGES.md`](QUICK_DEPLOY_GITHUB_PAGES.md) - 5-minute setup guide
+- **Secrets Setup**: [`GITHUB_SECRETS_SETUP.md`](GITHUB_SECRETS_SETUP.md) - GitHub Secrets configuration for email
 - **Full Guide**: [`GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md`](GITHUB_ACTIONS_DEPLOYMENT_GUIDE.md) - Complete documentation
 - **Testing**: [`TESTING_GUIDE.md`](TESTING_GUIDE.md) - Post-deployment verification checklist
 
