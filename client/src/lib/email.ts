@@ -10,7 +10,11 @@ function getTransporter(): Transporter | null {
   const pass = process.env.GMAIL_APP_PASSWORD
 
   if (!user || !pass) {
-    console.warn('GMAIL_USER or GMAIL_APP_PASSWORD is not set. Skipping email send.')
+    console.warn('⚠️ GMAIL_USER or GMAIL_APP_PASSWORD is not set.')
+    console.warn('📧 Email sending will be skipped. Configure these environment variables in Vercel:')
+    console.warn('   - GMAIL_USER: Your Gmail email address')
+    console.warn('   - GMAIL_APP_PASSWORD: Gmail App Password (not regular password)')
+    console.warn('   Generate App Password at: https://myaccount.google.com/apppasswords')
     return null
   }
 
@@ -35,7 +39,8 @@ export async function sendEmail({ to, subject, html, from }: EmailData) {
   try {
     const tx = getTransporter()
     if (!tx) {
-      return { success: false, error: new Error('Missing Gmail credentials') }
+      console.error('❌ Cannot send email - Gmail credentials not configured')
+      return { success: false, error: new Error('Missing Gmail credentials - configure GMAIL_USER and GMAIL_APP_PASSWORD in Vercel environment variables') }
     }
 
     const fromAddress =
@@ -49,11 +54,18 @@ export async function sendEmail({ to, subject, html, from }: EmailData) {
     })) as SentMessageInfo
     // Basic debug log for troubleshooting
     try {
-      console.log('[email] sent', { messageId: info?.messageId as string | undefined, to })
+      console.log('✅ [email] sent', { messageId: info?.messageId as string | undefined, to })
     } catch {}
     return { success: true, data: info }
   } catch (error) {
-    console.error('Email error:', error)
+    console.error('❌ Email error:', error)
+    if (error instanceof Error && error.message.includes('Invalid login')) {
+      console.error('🔑 Gmail authentication failed. Check these in Vercel environment variables:')
+      console.error('   - GMAIL_USER is correct email address')
+      console.error('   - GMAIL_APP_PASSWORD is a valid Gmail App Password (not regular password)')
+      console.error('   - 2FA is enabled on Gmail account')
+      console.error('   Generate new App Password at: https://myaccount.google.com/apppasswords')
+    }
     return { success: false, error }
   }
 }

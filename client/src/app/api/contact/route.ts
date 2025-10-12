@@ -8,10 +8,18 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = contactSchema.parse(body)
 
-    // Save contact request to database
-    const contactRequest = await prisma.contactRequest.create({
-      data: validatedData
-    })
+    // Try to save contact request to database (optional - for serverless environments)
+    let contactRequestId = 'email-only'
+    try {
+      const contactRequest = await prisma.contactRequest.create({
+        data: validatedData
+      })
+      contactRequestId = contactRequest.id
+    } catch (dbError) {
+      // Database might not be available in serverless environment (e.g., Vercel)
+      // Continue with email sending - this is the primary functionality
+      console.warn('Database save failed (expected in serverless), continuing with email:', dbError)
+    }
 
     // Generate email content
     const adminEmailHtml = generateContactNotificationEmail(
@@ -71,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      id: contactRequest.id,
+      id: contactRequestId,
       message: "Contact request submitted successfully"
     })
 

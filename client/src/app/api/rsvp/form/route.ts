@@ -30,27 +30,35 @@ export async function POST(req: NextRequest) {
     // Validate the data
     const validatedData = rsvpFormSchema.parse(transformedData)
 
-    // Save to database
-    const rsvpSubmission = await prisma.rSVPFormSubmission.create({
-      data: {
-        guestName: validatedData.guestName,
-        email: validatedData.email,
-        willAttendDhaka: validatedData.willAttendDhaka,
-        familySide: validatedData.familySide,
-        guestCount: validatedData.guestCount,
-        guestCountOther: validatedData.guestCountOther,
-        additionalInfo: validatedData.additionalInfo,
-        preferredNumber: validatedData.preferredNumber,
-        preferredWhatsapp: validatedData.preferredWhatsapp || false,
-        preferredBotim: validatedData.preferredBotim || false,
-        secondaryNumber: validatedData.secondaryNumber,
-        secondaryWhatsapp: validatedData.secondaryWhatsapp || false,
-        secondaryBotim: validatedData.secondaryBotim || false,
-        emergencyName: validatedData.emergencyName,
-        emergencyPhone: validatedData.emergencyPhone,
-        emergencyEmail: validatedData.emergencyEmail,
-      },
-    })
+    // Try to save to database (optional - for serverless environments)
+    let rsvpSubmissionId = 'email-only'
+    try {
+      const rsvpSubmission = await prisma.rSVPFormSubmission.create({
+        data: {
+          guestName: validatedData.guestName,
+          email: validatedData.email,
+          willAttendDhaka: validatedData.willAttendDhaka,
+          familySide: validatedData.familySide,
+          guestCount: validatedData.guestCount,
+          guestCountOther: validatedData.guestCountOther,
+          additionalInfo: validatedData.additionalInfo,
+          preferredNumber: validatedData.preferredNumber,
+          preferredWhatsapp: validatedData.preferredWhatsapp || false,
+          preferredBotim: validatedData.preferredBotim || false,
+          secondaryNumber: validatedData.secondaryNumber,
+          secondaryWhatsapp: validatedData.secondaryWhatsapp || false,
+          secondaryBotim: validatedData.secondaryBotim || false,
+          emergencyName: validatedData.emergencyName,
+          emergencyPhone: validatedData.emergencyPhone,
+          emergencyEmail: validatedData.emergencyEmail,
+        },
+      })
+      rsvpSubmissionId = rsvpSubmission.id
+    } catch (dbError) {
+      // Database might not be available in serverless environment (e.g., Vercel)
+      // Continue with email sending - this is the primary functionality
+      console.warn('Database save failed (expected in serverless), continuing with email:', dbError)
+    }
 
     const html = generateRSVPFormEmail(body)
 
@@ -98,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      id: rsvpSubmission.id,
+      id: rsvpSubmissionId,
       message: 'RSVP submitted successfully'
     })
   } catch (error) {
