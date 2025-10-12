@@ -27,6 +27,7 @@
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
+    "db:verify": "tsx scripts/verify-database.ts",
     "email:test": "tsx src/scripts/send-test-email.ts",
     "postinstall": "prisma generate",
     "e2e": "playwright test --config=playwright.config.ts --project=chromium",
