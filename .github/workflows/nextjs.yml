@@ -110,10 +110,13 @@ jobs:
           # Email (placeholder - not functional in static export)
           RESEND_API_KEY="re_placeholder"
           
-          # Cloudinary (placeholder - not functional in static export)
-          CLOUDINARY_CLOUD_NAME="placeholder"
-          CLOUDINARY_API_KEY="placeholder"
-          CLOUDINARY_API_SECRET="placeholder"
+          GMAIL_USER="codestromhub@gmail.com"
+          GMAIL_APP_PASSWORD="rfmltjgaqdtzqhpv"
+          GMAIL_FROM="arvincia@sparrow-group.com"
+          CLOUDINARY_CLOUD_NAME=""
+          CLOUDINARY_API_KEY=""
+          CLOUDINARY_API_SECRET=""
+          TEST_EMAIL_TO="arvincia@sparrow-group.com"
           
           # Web3Forms for static form submissions
           # Get your free access key at https://web3forms.com
