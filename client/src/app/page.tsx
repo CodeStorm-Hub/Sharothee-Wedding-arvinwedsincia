@@ -514,13 +514,13 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="group">
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
-                <video
-                  src="/videos/wedding-highlights.mp4"
-                  poster={assetUrl("/images/highlights-thumbnail.jpg")}
-                  controls
-                  className="w-full h-full object-contain"
-                ></video>
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4 bg-gray-100">
+                <iframe
+                  src="https://drive.google.com/file/d/1YRC2na-sGtwYKk15sSrtHqWeC7tU_eiu/preview"
+                  className="w-full h-full"
+                  allow="autoplay"
+                  title="Wedding Highlights"
+                ></iframe>
               </div>
               <h3 className="text-2xl font-serif font-semibold text-secondary mb-2">
                 Wedding Highlights
@@ -531,13 +531,13 @@ export default function HomePage() {
             </div>
 
             <div className="group">
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4">
-                <video
-                  src="/videos/wedding-reception.mp4"
-                  poster={assetUrl("/images/reception-thumbnail.jpg")}
-                  controls
-                  className="w-full h-full object-contain"
-                ></video>
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-4 bg-gray-100">
+                <iframe
+                  src="https://drive.google.com/file/d/16hIAsr6-7CJ2_zNbK-g0hpwzi3tRug1b/preview"
+                  className="w-full h-full"
+                  allow="autoplay"
+                  title="Reception & Celebration"
+                ></iframe>
               </div>
               <h3 className="text-2xl font-serif font-semibold text-secondary mb-2">
                 Reception & Celebration
