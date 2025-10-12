@@ -2,6 +2,16 @@ import Link from "next/link";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { PaperAirplaneIcon, BuildingLibraryIcon, MapIcon, SunIcon, CurrencyDollarIcon, BuildingOffice2Icon, AcademicCapIcon, MegaphoneIcon, DevicePhoneMobileIcon, PhoneIcon, MapPinIcon, StarIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Travel Information",
+  description: "Travel guide for Incia & Arvin's wedding in Dhaka, Bangladesh - Flight information, accommodation recommendations, visa requirements, and local tips.",
+  openGraph: {
+    title: "Travel Information | Incia & Arvin's Wedding",
+    description: "Everything you need to know about traveling to Dhaka for the wedding celebration",
+  },
+};
 
 export default function TravelPage() {
   // No longer using old accommodations array
