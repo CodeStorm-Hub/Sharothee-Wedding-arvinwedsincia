@@ -38,7 +38,7 @@ A comprehensive, bilingual (English & Bengali) wedding website serving as the di
 - **Database**: MySQL with Prisma ORM
 - **Authentication**: NextAuth.js with JWT tokens
 - **File Storage**: Cloudinary for media management
-- **Email Service**: Gmail SMTP via serverless API (for GitHub Pages), Resend for VPS deployment
+- **Email Service**: Resend for notifications
 - **Forms**: React Hook Form with Zod validation
 - **State Management**: Zustand
 - **Testing**: Jest with React Testing Library

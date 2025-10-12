@@ -2,14 +2,14 @@
 #
 # FEATURES:
 # ✅ All public-facing pages (Home, Events, Gallery, Live, Travel, Contact, RSVP)
-# ✅ Working contact and RSVP forms (using Gmail via serverless API)
+# ✅ Working contact and RSVP forms (using Web3Forms API)
 # ✅ All images and static assets
 # ✅ Responsive design and mobile-friendly
 #
 # SETUP REQUIRED:
-# 1. Deploy the serverless email API to Vercel (see api-serverless/README.md)
-# 2. Add serverless API URL as repository secret: EMAIL_API_URL
-# 3. Add Gmail credentials as repository secrets (for the serverless API):
+# 1. Get free Web3Forms API key from https://web3forms.com
+# 2. Add as repository secret: WEB3FORMS_ACCESS_KEY
+# 3. Add Gmail credentials as repository secrets:
 #    - GMAIL_USER: Gmail email address
 #    - GMAIL_APP_PASSWORD: Gmail app password (not regular password)
 #    - GMAIL_FROM: Display name for emails (e.g., "Wedding <email@domain.com>")
@@ -126,12 +126,13 @@ jobs:
           CLOUDINARY_API_KEY=""
           CLOUDINARY_API_SECRET=""
           
-          # Serverless Email API URL (deployed on Vercel)
-          # This is used by the static site to send emails via Gmail
-          NEXT_PUBLIC_EMAIL_API_URL="${{ secrets.EMAIL_API_URL }}"
+          # Web3Forms for static form submissions
+          # Get your free access key at https://web3forms.com
+          # Add as repository secret: WEB3FORMS_ACCESS_KEY
+          NEXT_PUBLIC_WEB3FORMS_KEY="${{ secrets.WEB3FORMS_ACCESS_KEY }}"
           EOF
           echo "Environment file created"
-          echo "Email API URL configured: ${{ secrets.EMAIL_API_URL != '' && 'Yes' || 'No (using default)' }}"
+          echo "Web3Forms key configured: ${{ secrets.WEB3FORMS_ACCESS_KEY != '' && 'Yes' || 'No (using fallback)' }}"
       - name: Generate Prisma client
         working-directory: ./client
         run: npx prisma generate

@@ -1,7 +1,7 @@
 /**
- * Serverless form submission handler
- * Uses Gmail-based serverless API for static deployments (GitHub Pages)
- * Falls back to local API routes in server mode
+ * Form submission handler
+ * Uses Next.js API routes with Gmail SMTP
+ * For production deployment on VPS/server platforms (not GitHub Pages static export)
  */
 
 export interface FormSubmissionResult {
@@ -35,176 +35,87 @@ interface ContactFormData {
 }
 
 /**
- * Check if we're in static export mode (GitHub Pages)
+ * Check if we're in server mode with API routes available
  */
-export function isStaticMode(): boolean {
-  if (typeof window === 'undefined') return false;
-  // Check if API routes are available by testing environment
-  const isGitHubPages = window.location.hostname.includes('github.io');
-  const apiAvailable = process.env.NEXT_PUBLIC_API_AVAILABLE === 'true';
-  return isGitHubPages || !apiAvailable;
+export function isServerMode(): boolean {
+  // Always use API routes (they use Gmail SMTP via nodemailer)
+  // This works for VPS/server deployments (Vercel, Hostinger, etc.)
+  // Note: GitHub Pages static export cannot use API routes
+  return true;
 }
 
 /**
- * Get the serverless email API URL
- */
-function getEmailApiUrl(): string {
-  // Use environment variable if set, otherwise default to Vercel deployment
-  return process.env.NEXT_PUBLIC_EMAIL_API_URL || 'https://wedding-email-api.vercel.app/api/send-email';
-}
-
-/**
- * Submit RSVP form
- * In static mode: sends email via serverless Gmail API
- * In server mode: uses Next.js API route
+ * Submit RSVP form via Next.js API route
+ * Uses Gmail SMTP on the backend
  */
 export async function submitRSVPForm(data: RSVPFormData): Promise<FormSubmissionResult> {
   try {
-    if (isStaticMode()) {
-      // Use serverless Gmail API for static deployment
-      return await submitViaEmailAPI(data, 'RSVP');
-    } else {
-      // Use Next.js API route for server deployment
-      const response = await fetch('/api/rsvp/form', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+    // Use Next.js API route (uses Gmail SMTP via nodemailer)
+    const response = await fetch('/api/rsvp/form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
 
-      const result = await response.json();
-      
-      if (!response.ok) {
-        return {
-          success: false,
-          message: result.error || 'Failed to submit RSVP',
-          error: result.error,
-        };
-      }
-
+    const result = await response.json();
+    
+    if (!response.ok) {
       return {
-        success: true,
-        message: 'RSVP submitted successfully!',
+        success: false,
+        message: result.error || 'Failed to submit RSVP',
+        error: result.error,
       };
     }
+
+    return {
+      success: true,
+      message: 'RSVP submitted successfully!',
+    };
   } catch (error) {
     console.error('RSVP submission error:', error);
     return {
       success: false,
-      message: 'Failed to submit RSVP. Please try again.',
+      message: 'Failed to submit RSVP. Please try again or contact us directly at arvincia@sparrow-group.com',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
 
 /**
- * Submit contact form
- * In static mode: sends email via serverless Gmail API
- * In server mode: uses Next.js API route
+ * Submit contact form via Next.js API route
+ * Uses Gmail SMTP on the backend
  */
 export async function submitContactForm(data: ContactFormData): Promise<FormSubmissionResult> {
   try {
-    if (isStaticMode()) {
-      // Use serverless Gmail API for static deployment
-      return await submitViaEmailAPI(data, 'Contact');
-    } else {
-      // Use Next.js API route for server deployment
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+    // Use Next.js API route (uses Gmail SMTP via nodemailer)
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
 
-      const result = await response.json();
-      
-      if (!response.ok) {
-        return {
-          success: false,
-          message: result.error || 'Failed to send message',
-          error: result.error,
-        };
-      }
-
+    const result = await response.json();
+    
+    if (!response.ok) {
       return {
-        success: true,
-        message: 'Message sent successfully!',
+        success: false,
+        message: result.error || 'Failed to send message',
+        error: result.error,
       };
     }
+
+    return {
+      success: true,
+      message: 'Message sent successfully!',
+    };
   } catch (error) {
     console.error('Contact form submission error:', error);
     return {
       success: false,
-      message: 'Failed to send message. Please try again.',
+      message: 'Failed to send message. Please try again or contact us directly at arvincia@sparrow-group.com',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
 
-/**
- * Submit form via serverless Email API
- * Uses Gmail SMTP via Vercel serverless function
- */
-async function submitViaEmailAPI(
-  data: RSVPFormData | ContactFormData,
-  formType: 'RSVP' | 'Contact'
-): Promise<FormSubmissionResult> {
-  try {
-    const apiUrl = getEmailApiUrl();
-    
-    // Submit to serverless email API
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        formType,
-        data,
-      }),
-    });
 
-    const result = await response.json();
-
-    if (result.success) {
-      // Also store in localStorage for reference
-      storeSubmissionLocally(formType, data);
-      
-      return {
-        success: true,
-        message: result.message || `${formType} submitted successfully! We'll get back to you soon.`,
-      };
-    } else {
-      return {
-        success: false,
-        message: result.error || `Failed to submit ${formType}. Please email us directly at arvincia@sparrow-group.com`,
-        error: result.error,
-      };
-    }
-  } catch (error) {
-    console.error('Email API submission error:', error);
-    return {
-      success: false,
-      message: 'Failed to send email. Please contact us directly at arvincia@sparrow-group.com',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-}
-
-/**
- * Store submission in localStorage for offline reference
- */
-function storeSubmissionLocally(formType: string, data: RSVPFormData | ContactFormData): void {
-  try {
-    const key = `${formType.toLowerCase()}_submissions`;
-    const existing = localStorage.getItem(key);
-    const submissions = existing ? JSON.parse(existing) : [];
-    
-    submissions.push({
-      ...data,
-      timestamp: new Date().toISOString(),
-    });
-    
-    localStorage.setItem(key, JSON.stringify(submissions));
-  } catch (error) {
-    console.error('Failed to store submission locally:', error);
-  }
-}
