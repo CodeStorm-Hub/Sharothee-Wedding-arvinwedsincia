@@ -76,7 +76,7 @@ The deployment is automated via `.github/workflows/nextjs.yml`:
 
 To enable email functionality and proper builds, configure these repository secrets:
 
-1. **WEB3FORMS_ACCESS_KEY**: Free API key from [Web3Forms](https://web3forms.com) for contact forms
+1. **EMAIL_API_URL**: URL of the deployed serverless email API (e.g., `https://wedding-email-api.vercel.app/api/send-email`)
 2. **GMAIL_USER**: Gmail email address for sending emails (e.g., `your-email@gmail.com`)
 3. **GMAIL_APP_PASSWORD**: Gmail app password (NOT your regular password)
    - Generate at: [Google Account App Passwords](https://myaccount.google.com/apppasswords)
@@ -91,19 +91,46 @@ To enable email functionality and proper builds, configure these repository secr
 3. Add each secret with its name and value
 4. Secrets are encrypted and not visible after creation
 
+#### Deploying the Serverless Email API
+
+The serverless email API must be deployed to Vercel before the static site can send emails:
+
+1. Navigate to `api-serverless` directory
+2. Install Vercel CLI: `npm install -g vercel`
+3. Login to Vercel: `vercel login`
+4. Deploy: `vercel --prod`
+5. Set environment variables in Vercel dashboard:
+   - `GMAIL_USER`
+   - `GMAIL_APP_PASSWORD`
+   - `ALLOWED_ORIGINS` (include your GitHub Pages URL)
+6. Copy the deployment URL and add to GitHub secrets as `EMAIL_API_URL`
+
+See `api-serverless/README.md` for detailed instructions.
+
 ## Form Handling in Static Mode
 
-Since API routes don't work in static export, forms have been modified:
+Since API routes don't work in static export, forms use a serverless email API:
+
+### Serverless Email API
+
+A separate Vercel serverless function handles email sending via Gmail SMTP. The static GitHub Pages site calls this API endpoint when forms are submitted.
+
+**Setup**:
+1. Deploy the serverless API (see `api-serverless/README.md`)
+2. Configure environment variables in Vercel dashboard
+3. Add API URL to GitHub repository secrets as `EMAIL_API_URL`
 
 ### RSVP Form
-- Shows success message with email contact information
-- Suggests emailing: `arvincia@sparrow-group.com`
-- Form validation still works client-side
+- Submits data to serverless email API
+- Sends email to wedding organizers via Gmail SMTP
+- Stores submission locally in browser for reference
+- Full client-side validation
 
 ### Contact Form
-- Shows success message with email contact information
-- Suggests emailing: `arvincia@sparrow-group.com`
-- Form validation still works client-side
+- Submits data to serverless email API  
+- Sends email to wedding organizers via Gmail SMTP
+- Stores submission locally in browser for reference
+- Full client-side validation
 
 ## Local Testing
 

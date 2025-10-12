@@ -1,0 +1,17 @@
+{
+  "name": "wedding-email-api",
+  "version": "1.0.0",
+  "description": "Serverless email API for wedding website form submissions",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.14",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

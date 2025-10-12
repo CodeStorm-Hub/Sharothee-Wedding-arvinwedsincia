@@ -1,6 +1,6 @@
 /**
  * Serverless form submission handler
- * Uses Web3Forms API for static deployments (GitHub Pages)
+ * Uses Gmail-based serverless API for static deployments (GitHub Pages)
  * Falls back to local API routes in server mode
  */
 
@@ -46,15 +46,23 @@ export function isStaticMode(): boolean {
 }
 
 /**
+ * Get the serverless email API URL
+ */
+function getEmailApiUrl(): string {
+  // Use environment variable if set, otherwise default to Vercel deployment
+  return process.env.NEXT_PUBLIC_EMAIL_API_URL || 'https://wedding-email-api.vercel.app/api/send-email';
+}
+
+/**
  * Submit RSVP form
- * In static mode: sends email via Web3Forms
+ * In static mode: sends email via serverless Gmail API
  * In server mode: uses Next.js API route
  */
 export async function submitRSVPForm(data: RSVPFormData): Promise<FormSubmissionResult> {
   try {
     if (isStaticMode()) {
-      // Use Web3Forms for static deployment
-      return await submitViaWeb3Forms(data, 'RSVP');
+      // Use serverless Gmail API for static deployment
+      return await submitViaEmailAPI(data, 'RSVP');
     } else {
       // Use Next.js API route for server deployment
       const response = await fetch('/api/rsvp/form', {
@@ -90,14 +98,14 @@ export async function submitRSVPForm(data: RSVPFormData): Promise<FormSubmission
 
 /**
  * Submit contact form
- * In static mode: sends email via Web3Forms
+ * In static mode: sends email via serverless Gmail API
  * In server mode: uses Next.js API route
  */
 export async function submitContactForm(data: ContactFormData): Promise<FormSubmissionResult> {
   try {
     if (isStaticMode()) {
-      // Use Web3Forms for static deployment
-      return await submitViaWeb3Forms(data, 'Contact');
+      // Use serverless Gmail API for static deployment
+      return await submitViaEmailAPI(data, 'Contact');
     } else {
       // Use Next.js API route for server deployment
       const response = await fetch('/api/contact', {
@@ -132,58 +140,26 @@ export async function submitContactForm(data: ContactFormData): Promise<FormSubm
 }
 
 /**
- * Submit form via Web3Forms API
- * This is a free service that sends emails without a backend
- * Sign up at https://web3forms.com to get your access key
+ * Submit form via serverless Email API
+ * Uses Gmail SMTP via Vercel serverless function
  */
-async function submitViaWeb3Forms(
+async function submitViaEmailAPI(
   data: RSVPFormData | ContactFormData,
   formType: 'RSVP' | 'Contact'
 ): Promise<FormSubmissionResult> {
   try {
-    // Web3Forms access key - can be public, it's rate-limited per domain
-    // Get your free key at https://web3forms.com
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'YOUR_WEB3FORMS_ACCESS_KEY_HERE';
+    const apiUrl = getEmailApiUrl();
     
-    // Format the data for Web3Forms
-    const formData = new FormData();
-    formData.append('access_key', accessKey);
-    formData.append('subject', `${formType} Submission - Incia & Arvin's Wedding`);
-    formData.append('from_name', 'Wedding Website');
-    
-    // Send notification email TO codestromhub@gmail.com
-    formData.append('email', 'codestromhub@gmail.com');
-    
-    // Set from email to codestromhub@gmail.com
-    formData.append('from_email', 'codestromhub@gmail.com');
-    
-    // CC arvincia@sparrow-group.com on all form submissions
-    formData.append('cc', 'arvincia@sparrow-group.com');
-    
-    // Add form-specific data
-    if (formType === 'RSVP') {
-      const rsvpData = data as RSVPFormData;
-      const userEmail = rsvpData.contact?.email || rsvpData.email || 'Not provided';
-      
-      formData.append('name', rsvpData.guestName || 'Guest');
-      formData.append('message', formatRSVPMessage(rsvpData));
-      // Include submitter's email in the message content
-      formData.append('Submitter Email', userEmail);
-    } else {
-      const contactData = data as ContactFormData;
-      const userEmail = contactData.email || 'Not provided';
-      
-      formData.append('name', contactData.name || 'Guest');
-      formData.append('message', contactData.message || '');
-      formData.append('phone', contactData.phone || '');
-      // Include submitter's email in the message content
-      formData.append('Submitter Email', userEmail);
-    }
-
-    // Submit to Web3Forms
-    const response = await fetch('https://api.web3forms.com/submit', {
+    // Submit to serverless email API
+    const response = await fetch(apiUrl, {
       method: 'POST',
-      body: formData,
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        formType,
+        data,
+      }),
     });
 
     const result = await response.json();
@@ -194,68 +170,23 @@ async function submitViaWeb3Forms(
       
       return {
         success: true,
-        message: `${formType} submitted successfully! We'll get back to you soon.`,
+        message: result.message || `${formType} submitted successfully! We'll get back to you soon.`,
       };
     } else {
       return {
         success: false,
-        message: `Failed to submit ${formType}. Please email us directly at arvincia@sparrow-group.com`,
-        error: result.message,
+        message: result.error || `Failed to submit ${formType}. Please email us directly at arvincia@sparrow-group.com`,
+        error: result.error,
       };
     }
   } catch (error) {
-    console.error('Web3Forms submission error:', error);
+    console.error('Email API submission error:', error);
     return {
       success: false,
-      message: 'Please email us directly at arvincia@sparrow-group.com',
+      message: 'Failed to send email. Please contact us directly at arvincia@sparrow-group.com',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-}
-
-/**
- * Format RSVP data into a readable email message
- */
-function formatRSVPMessage(data: RSVPFormData): string {
-  let message = `New RSVP Submission\n\n`;
-  message += `Guest Name: ${data.guestName || 'N/A'}\n`;
-  message += `Email: ${data.contact?.email || data.email || 'N/A'}\n`;
-  message += `Will Attend Dhaka: ${data.willAttendDhaka || 'N/A'}\n`;
-  message += `Family Side: ${data.familySide || 'N/A'}\n`;
-  message += `Guest Count: ${data.guestCountOption || 'N/A'}`;
-  
-  if (data.guestCountOther) {
-    message += ` (${data.guestCountOther})`;
-  }
-  
-  message += `\n`;
-  
-  if (data.additionalInfo) {
-    message += `\nAdditional Info: ${data.additionalInfo}\n`;
-  }
-  
-  if (data.contact?.preferred?.number) {
-    message += `\nPreferred Contact: ${data.contact.preferred.number}`;
-    if (data.contact.preferred.whatsapp) message += ' (WhatsApp)';
-    if (data.contact.preferred.botim) message += ' (Botim)';
-    message += `\n`;
-  }
-  
-  if (data.contact?.secondary?.number) {
-    message += `Secondary Contact: ${data.contact.secondary.number}`;
-    if (data.contact.secondary.whatsapp) message += ' (WhatsApp)';
-    if (data.contact.secondary.botim) message += ' (Botim)';
-    message += `\n`;
-  }
-  
-  if (data.contact?.emergency?.name) {
-    message += `\nEmergency Contact:\n`;
-    message += `Name: ${data.contact.emergency.name}\n`;
-    message += `Phone: ${data.contact.emergency.phone || 'N/A'}\n`;
-    message += `Email: ${data.contact.emergency.email || 'N/A'}\n`;
-  }
-  
-  return message;
 }
 
 /**
