@@ -1,16 +1,6 @@
 name: 🧪 Wedding Website CI/CD Pipeline
 
 on:
-  push:
-    branches: [ "main", "develop" ]
-    paths:
-      - 'client/**'
-      - '.github/workflows/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'client/**'
-      - '.github/workflows/**'
   workflow_dispatch:
     inputs:
       deploy_environment:

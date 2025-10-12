@@ -6,6 +6,7 @@ import Providers from "@/components/providers";
 import RouteLoader from "@/components/RouteLoader";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -66,6 +67,7 @@ export default function RootLayout({
           </ErrorBoundary>
         </Providers>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

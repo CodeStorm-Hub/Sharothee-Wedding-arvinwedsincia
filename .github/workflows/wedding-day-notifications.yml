@@ -1,10 +1,7 @@
 name: 📢 Wedding Day Notifications
 
 on:
-  issues:
-    types: [opened, labeled]
-  schedule:
-    - cron: '0 9,15,21 * * *'  # 9 AM, 3 PM, 9 PM daily
+  workflow_dispatch:
 
 permissions:
   issues: write
