@@ -1,8 +1,7 @@
 name: 🏷️ Auto Label Issues
 
 on:
-  issues:
-    types: [opened, edited]
+  workflow_dispatch:
 
 permissions:
   issues: write
