@@ -181,6 +181,35 @@ model ContactRequest {
   updatedAt DateTime       @updatedAt
 }
 
+model RSVPFormSubmission {
+  id                 String   @id @default(cuid())
+  guestName          String?
+  email              String
+  willAttendDhaka    String   // 'yes' | 'no' | 'maybe'
+  familySide         String   // 'bride' | 'groom' | 'both'
+  guestCount         String   // '1' | '2' | '3' | '4' | 'other'
+  guestCountOther    String?
+  additionalInfo     String?  @db.Text
+  
+  // Contact Information
+  preferredNumber    String?
+  preferredWhatsapp  Boolean  @default(false)
+  preferredBotim     Boolean  @default(false)
+  secondaryNumber    String?
+  secondaryWhatsapp  Boolean  @default(false)
+  secondaryBotim     Boolean  @default(false)
+  
+  // Emergency Contact
+  emergencyName      String?
+  emergencyPhone     String?
+  emergencyEmail     String?
+  
+  status             RequestStatus @default(PENDING)
+  adminNote          String?       @db.Text
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
 // Enums
 enum Role {
   ADMIN
