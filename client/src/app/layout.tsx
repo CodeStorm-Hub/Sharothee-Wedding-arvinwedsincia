@@ -5,6 +5,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import Providers from "@/components/providers";
 import RouteLoader from "@/components/RouteLoader";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -64,6 +65,7 @@ export default function RootLayout({
             {children}
           </ErrorBoundary>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
