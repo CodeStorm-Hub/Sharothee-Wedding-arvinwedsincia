@@ -37,7 +37,7 @@
     "e2e:headed": "playwright test --config=playwright.config.ts --project=chromium --headed"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.10.0",
+    "@auth/prisma-adapter": "^2.11.1",
     "@headlessui/react": "^2.0.4",
     "@heroicons/react": "^2.0.18",
     "@prisma/client": "^6.16.2",
@@ -52,9 +52,9 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.5.4",
     "jszip": "^3.10.1",
-    "next": "15.4.8",
-    "next-auth": "^4.24.7",
-    "nodemailer": "^6.9.14",
+    "next": "15.5.9",
+    "next-auth": "^4.24.12",
+    "nodemailer": "^7.0.11",
     "react": "19.1.2",
     "react-dom": "19.1.2",
     "react-hook-form": "^7.52.2",
@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.13",
