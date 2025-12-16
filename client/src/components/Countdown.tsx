@@ -77,6 +77,7 @@ export default function Countdown({ className = '' }: CountdownProps) {
       const difference = target - now;
 
       if (difference <= 0) {
+        // Event just passed, will find next event on next tick
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
