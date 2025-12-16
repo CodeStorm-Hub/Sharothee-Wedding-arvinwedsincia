@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { HeartIcon } from '@heroicons/react/24/outline'
+import { useWeddingEvents } from '@/hooks/useWeddingEvents';
 
 interface TimeLeft {
   days: number;
@@ -11,27 +12,34 @@ interface TimeLeft {
 }
 
 interface CountdownProps {
-  targetDate: string;
   className?: string;
 }
 
-export default function Countdown({ targetDate, className = '' }: CountdownProps) {
+export default function Countdown({ className = '' }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  const [hasExpired, setHasExpired] = useState(false);
+  
+  const { currentEvent, allEventsCompleted } = useWeddingEvents();
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const target = new Date(targetDate).getTime();
-      const now = new Date().getTime();
+      if (!currentEvent) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      // Check for mock date in localStorage (for testing purposes)
+      const mockDate = typeof window !== 'undefined' ? localStorage.getItem('mockCurrentDate') : null;
+      const now = mockDate ? new Date(mockDate).getTime() : new Date().getTime();
+      const target = new Date(currentEvent.date).getTime();
       const difference = target - now;
 
       if (difference <= 0) {
-        setHasExpired(true);
+        // Event just passed, will find next event on next tick
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
@@ -51,9 +59,9 @@ export default function Countdown({ targetDate, className = '' }: CountdownProps
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [currentEvent]);
 
-  if (hasExpired) {
+  if (allEventsCompleted) {
     return (
       <div className={`text-center ${className}`}>
         <div className="animate-floatIn">
@@ -109,10 +117,12 @@ export default function Countdown({ targetDate, className = '' }: CountdownProps
         </div>
       </div>
       
-      <p className="text-sm text-muted mt-3 font-medium inline-flex items-center gap-2">
-        <HeartIcon className="h-4 w-4 text-primary" />
-        Until we say &quot;I do&quot;
-      </p>
+      {currentEvent && (
+        <p className="text-sm text-muted mt-3 font-medium inline-flex items-center gap-2">
+          <HeartIcon className="h-4 w-4 text-primary" />
+          {currentEvent.message}
+        </p>
+      )}
     </div>
   );
 }
