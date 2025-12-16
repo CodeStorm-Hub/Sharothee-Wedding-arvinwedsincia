@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
 import Navigation from "@/components/layout/Navigation";
@@ -6,8 +8,10 @@ import Countdown from "@/components/Countdown";
 import HeartCollage from "@/components/HeartCollage";
 import { assetUrl } from "@/lib/utils";
 import { ArrowRightIcon, HeartIcon, CalendarDaysIcon, PhotoIcon, MapPinIcon, EnvelopeIcon, GlobeAmericasIcon, TrophyIcon } from '@heroicons/react/24/outline'
+import { useWeddingEvents } from "@/hooks/useWeddingEvents";
 
 export default function HomePage() {
+  const { currentEvent, allEventsCompleted } = useWeddingEvents();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sharothee-wedding.vercel.app';
   
   // JSON-LD structured data for SEO
@@ -91,24 +95,56 @@ export default function HomePage() {
               <div className="flex items-center justify-center gap-2 mb-3">
                 <CalendarDaysIcon className="h-6 w-6 text-primary" />
                 <h3 className="text-xl sm:text-2xl font-serif font-semibold text-secondary">
-                  Save the Date
+                  Save the Dates (Dec 16-18)
                 </h3>
               </div>
-              <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
-                December 16, 2025
-              </p>
-              <p className="text-sm text-muted mb-4">Tuesday • Starts at 6:00 PM</p>
+              {allEventsCompleted ? (
+                <>
+                  <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
+                    December 16-18, 2025
+                  </p>
+                  <p className="text-sm text-muted mb-4">All Events Completed</p>
+                </>
+              ) : currentEvent ? (
+                <>
+                  <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
+                    {currentEvent.name} {currentEvent.displayDate}
+                  </p>
+                  <p className="text-sm text-muted mb-4">{currentEvent.displayTime}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
+                    Holud December 16, 2025
+                  </p>
+                  <p className="text-sm text-muted mb-4">Tuesday • Starts at 4:00 PM</p>
+                </>
+              )}
               {/* Countdown Timer */}
-              <Countdown 
-                targetDate="2025-12-16T00:00:00+06:00" 
-                className="mb-4"
-              />
-              <p className="text-muted font-medium">
-                Dhaka, Bangladesh
-              </p>
-              <p className="text-sm text-muted mt-1">
-                After-party in Phu Quoc, Vietnam
-              </p>
+              <Countdown className="mb-4" />
+              {allEventsCompleted ? (
+                <>
+                  <p className="text-muted font-medium">
+                    Dhaka, Bangladesh
+                  </p>
+                  <p className="text-sm text-muted mt-1">
+                    After-party in Phu Quoc, Vietnam
+                  </p>
+                </>
+              ) : currentEvent ? (
+                <p className="text-muted font-medium">
+                  {currentEvent.location}
+                </p>
+              ) : (
+                <>
+                  <p className="text-muted font-medium">
+                    Dhaka, Bangladesh
+                  </p>
+                  <p className="text-sm text-muted mt-1">
+                    After-party in Phu Quoc, Vietnam
+                  </p>
+                </>
+              )}
             </div>
 
             {/* CTA Buttons */}
