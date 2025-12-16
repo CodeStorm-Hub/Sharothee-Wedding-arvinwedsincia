@@ -99,10 +99,7 @@ export default function HomePage() {
               </p>
               <p className="text-sm text-muted mb-4">Tuesday • Starts at 6:00 PM</p>
               {/* Countdown Timer */}
-              <Countdown 
-                targetDate="2025-12-16T00:00:00+06:00" 
-                className="mb-4"
-              />
+              <Countdown className="mb-4" />
               <p className="text-muted font-medium">
                 Dhaka, Bangladesh
               </p>

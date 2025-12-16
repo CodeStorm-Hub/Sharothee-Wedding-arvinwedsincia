@@ -10,28 +10,73 @@ interface TimeLeft {
   seconds: number;
 }
 
+interface WeddingEvent {
+  name: string;
+  date: string;
+  message: string;
+}
+
 interface CountdownProps {
-  targetDate: string;
   className?: string;
 }
 
-export default function Countdown({ targetDate, className = '' }: CountdownProps) {
+export default function Countdown({ className = '' }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  const [hasExpired, setHasExpired] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<WeddingEvent | null>(null);
+  const [allEventsCompleted, setAllEventsCompleted] = useState(false);
+
+  // Define all wedding events in chronological order
+  const weddingEvents: WeddingEvent[] = [
+    {
+      name: 'Holud',
+      date: '2025-12-16T16:00:00+06:00', // December 16, 4:00 PM
+      message: 'Until the Holud Ceremony'
+    },
+    {
+      name: 'Akdh',
+      date: '2025-12-17T19:00:00+06:00', // December 17, 7:00 PM
+      message: 'Until the Wedding Ceremony'
+    },
+    {
+      name: 'Grand Reception',
+      date: '2025-12-18T19:00:00+06:00', // December 18, 7:00 PM
+      message: 'Until the Grand Reception'
+    }
+  ];
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const target = new Date(targetDate).getTime();
       const now = new Date().getTime();
+      
+      // Find the next upcoming event
+      let nextEvent: WeddingEvent | null = null;
+      for (const event of weddingEvents) {
+        const eventTime = new Date(event.date).getTime();
+        if (eventTime > now) {
+          nextEvent = event;
+          break;
+        }
+      }
+
+      // If no upcoming events, all events are completed
+      if (!nextEvent) {
+        setAllEventsCompleted(true);
+        setCurrentEvent(null);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      // Calculate time remaining to next event
+      setCurrentEvent(nextEvent);
+      const target = new Date(nextEvent.date).getTime();
       const difference = target - now;
 
       if (difference <= 0) {
-        setHasExpired(true);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
@@ -51,9 +96,9 @@ export default function Countdown({ targetDate, className = '' }: CountdownProps
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, []);
 
-  if (hasExpired) {
+  if (allEventsCompleted) {
     return (
       <div className={`text-center ${className}`}>
         <div className="animate-floatIn">
@@ -109,10 +154,12 @@ export default function Countdown({ targetDate, className = '' }: CountdownProps
         </div>
       </div>
       
-      <p className="text-sm text-muted mt-3 font-medium inline-flex items-center gap-2">
-        <HeartIcon className="h-4 w-4 text-primary" />
-        Until we say &quot;I do&quot;
-      </p>
+      {currentEvent && (
+        <p className="text-sm text-muted mt-3 font-medium inline-flex items-center gap-2">
+          <HeartIcon className="h-4 w-4 text-primary" />
+          {currentEvent.message}
+        </p>
+      )}
     </div>
   );
 }
