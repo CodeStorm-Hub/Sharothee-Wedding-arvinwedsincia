@@ -95,7 +95,7 @@ export default function HomePage() {
               <div className="flex items-center justify-center gap-2 mb-3">
                 <CalendarDaysIcon className="h-6 w-6 text-primary" />
                 <h3 className="text-xl sm:text-2xl font-serif font-semibold text-secondary">
-                  Save the Date
+                  Save the Dates (Dec 16-18)
                 </h3>
               </div>
               {allEventsCompleted ? (
@@ -108,16 +108,16 @@ export default function HomePage() {
               ) : currentEvent ? (
                 <>
                   <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
-                    {currentEvent.displayDate}
+                    {currentEvent.name} {currentEvent.displayDate}
                   </p>
                   <p className="text-sm text-muted mb-4">{currentEvent.displayTime}</p>
                 </>
               ) : (
                 <>
                   <p className="text-2xl sm:text-3xl font-light text-secondary mb-3">
-                    December 16, 2025
+                    Holud December 16, 2025
                   </p>
-                  <p className="text-sm text-muted mb-4">Tuesday • Starts at 6:00 PM</p>
+                  <p className="text-sm text-muted mb-4">Tuesday • Starts at 4:00 PM</p>
                 </>
               )}
               {/* Countdown Timer */}
