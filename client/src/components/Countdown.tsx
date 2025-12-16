@@ -1,19 +1,14 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { HeartIcon } from '@heroicons/react/24/outline'
+import { useWeddingEvents } from '@/hooks/useWeddingEvents';
 
 interface TimeLeft {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
-}
-
-interface WeddingEvent {
-  name: string;
-  date: string;
-  message: string;
 }
 
 interface CountdownProps {
@@ -27,53 +22,18 @@ export default function Countdown({ className = '' }: CountdownProps) {
     minutes: 0,
     seconds: 0
   });
-  const [currentEvent, setCurrentEvent] = useState<WeddingEvent | null>(null);
-  const [allEventsCompleted, setAllEventsCompleted] = useState(false);
-
-  // Define all wedding events in chronological order
-  const weddingEvents: WeddingEvent[] = useMemo(() => [
-    {
-      name: 'Holud',
-      date: '2025-12-16T16:00:00+06:00', // December 16, 4:00 PM
-      message: 'Until the Holud Ceremony'
-    },
-    {
-      name: 'Akdh',
-      date: '2025-12-17T19:00:00+06:00', // December 17, 7:00 PM
-      message: 'Until the Wedding Ceremony'
-    },
-    {
-      name: 'Grand Reception',
-      date: '2025-12-18T19:00:00+06:00', // December 18, 7:00 PM
-      message: 'Until the Grand Reception'
-    }
-  ], []);
+  
+  const { currentEvent, allEventsCompleted } = useWeddingEvents();
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      
-      // Find the next upcoming event
-      let nextEvent: WeddingEvent | null = null;
-      for (const event of weddingEvents) {
-        const eventTime = new Date(event.date).getTime();
-        if (eventTime > now) {
-          nextEvent = event;
-          break;
-        }
-      }
-
-      // If no upcoming events, all events are completed
-      if (!nextEvent) {
-        setAllEventsCompleted(true);
-        setCurrentEvent(null);
+      if (!currentEvent) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
 
-      // Calculate time remaining to next event
-      setCurrentEvent(nextEvent);
-      const target = new Date(nextEvent.date).getTime();
+      const now = new Date().getTime();
+      const target = new Date(currentEvent.date).getTime();
       const difference = target - now;
 
       if (difference <= 0) {
@@ -97,7 +57,7 @@ export default function Countdown({ className = '' }: CountdownProps) {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [weddingEvents]);
+  }, [currentEvent]);
 
   if (allEventsCompleted) {
     return (
