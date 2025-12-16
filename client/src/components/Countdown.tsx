@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { HeartIcon } from '@heroicons/react/24/outline'
 
 interface TimeLeft {
@@ -31,7 +31,7 @@ export default function Countdown({ className = '' }: CountdownProps) {
   const [allEventsCompleted, setAllEventsCompleted] = useState(false);
 
   // Define all wedding events in chronological order
-  const weddingEvents: WeddingEvent[] = [
+  const weddingEvents: WeddingEvent[] = useMemo(() => [
     {
       name: 'Holud',
       date: '2025-12-16T16:00:00+06:00', // December 16, 4:00 PM
@@ -47,7 +47,7 @@ export default function Countdown({ className = '' }: CountdownProps) {
       date: '2025-12-18T19:00:00+06:00', // December 18, 7:00 PM
       message: 'Until the Grand Reception'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -96,7 +96,7 @@ export default function Countdown({ className = '' }: CountdownProps) {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [weddingEvents]);
 
   if (allEventsCompleted) {
     return (
