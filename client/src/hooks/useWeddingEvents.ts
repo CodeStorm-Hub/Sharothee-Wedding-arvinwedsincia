@@ -49,7 +49,9 @@ export function useWeddingEvents() {
 
   useEffect(() => {
     const updateCurrentEvent = () => {
-      const now = new Date().getTime();
+      // Check for mock date in localStorage (for testing purposes)
+      const mockDate = typeof window !== 'undefined' ? localStorage.getItem('mockCurrentDate') : null;
+      const now = mockDate ? new Date(mockDate).getTime() : new Date().getTime();
       
       // Find the next upcoming event
       let nextEvent: WeddingEvent | null = null;
@@ -77,7 +79,21 @@ export function useWeddingEvents() {
     // Update every minute to check for event transitions
     const timer = setInterval(updateCurrentEvent, 60000);
 
-    return () => clearInterval(timer);
+    // Also listen for storage changes (when mock date is updated)
+    const handleStorageChange = () => {
+      updateCurrentEvent();
+    };
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleStorageChange);
+      }
+    };
   }, [weddingEvents]);
 
   return {

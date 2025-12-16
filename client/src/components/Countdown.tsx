@@ -32,7 +32,9 @@ export default function Countdown({ className = '' }: CountdownProps) {
         return;
       }
 
-      const now = new Date().getTime();
+      // Check for mock date in localStorage (for testing purposes)
+      const mockDate = typeof window !== 'undefined' ? localStorage.getItem('mockCurrentDate') : null;
+      const now = mockDate ? new Date(mockDate).getTime() : new Date().getTime();
       const target = new Date(currentEvent.date).getTime();
       const difference = target - now;
 
