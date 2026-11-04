@@ -52,7 +52,7 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.5.4",
     "jszip": "^3.10.1",
-    "next": "15.5.9",
+    "next": "15.5.29",
     "next-auth": "^4.24.13",
     "nodemailer": "^7.0.11",
     "react": "19.1.2",
